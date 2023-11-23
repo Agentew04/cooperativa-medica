@@ -1,20 +1,19 @@
 using CoopMedica.Services;
-using MySql.Data;
 using MySql.Data.MySqlClient;
 
-namespace CoopMedica.Storage;
+namespace CoopMedica.Database;
 
 /// <summary>
 /// Classe abstrata de coleção que mapeia um tipo <typeparamref name="T"/> para uma tabela no banco de dados.
 /// </summary>
 /// <typeparam name="T">O tipo a ser mapeado na tabela</typeparam> 
-public abstract class CollectionBase<T> where T : class {
+public abstract class BaseCollection<T> where T : class {
     protected readonly MySqlConnection conn;
 
     /// <summary>
     /// Creates a new CollectionBase instance.
     /// </summary>
-    public CollectionBase() {
+    protected BaseCollection() {
         conn = DatabaseService.Instance.Connection;
     }
 
@@ -27,7 +26,7 @@ public abstract class CollectionBase<T> where T : class {
         
         MySqlCommand cmd = GetSelectSQL();
         cmd.Connection = conn;
-        using MySqlDataReader reader = (MySqlDataReader)await cmd.ExecuteReaderAsync();
+        await using MySqlDataReader reader = (MySqlDataReader)await cmd.ExecuteReaderAsync();
         while(reader.Read()) {
             list.Add(ReadResult(reader));
         }
