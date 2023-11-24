@@ -48,18 +48,20 @@ public class DatabaseService
 
     public async Task SetupDatabase()
     {
+        MySqlCommand cmd;
+        await DeleteAll();
+
         string clientsTable = """
         CREATE TABLE IF NOT EXISTS `cooperativa`.`clients` (
         `client_id` INT NOT NULL AUTO_INCREMENT,
         `nome` VARCHAR(45) NOT NULL,
         `cpf` VARCHAR(45) NOT NULL,
         `data_nasc` DATE NOT NULL,
-        `plan_id
-        ` INT NULL,
+        `plan_id` INT NULL,
         PRIMARY KEY (`client_id`),
         FOREIGN KEY (`plan_id`) REFERENCES `cooperativa`.`plans` (`plan_id`));
         """;
-        MySqlCommand cmd = new(clientsTable, Connection);
+        cmd = new(clientsTable, Connection);
         await cmd.ExecuteNonQueryAsync();
 
         string dependantsTable = """
@@ -155,6 +157,23 @@ public class DatabaseService
         cmd = new(paymentsTable, Connection);
         await cmd.ExecuteNonQueryAsync();
         await AddValues();
+    }
+
+    private async Task DeleteAll()
+    {
+        string deleteAll = """
+        DROP TABLE IF EXISTS cooperativa.services;
+        DROP TABLE IF EXISTS cooperativa.dependants;
+        DROP TABLE IF EXISTS cooperativa.payments;
+        DROP TABLE IF EXISTS cooperativa.clients;
+        DROP TABLE IF EXISTS cooperativa.plans;
+        DROP TABLE IF EXISTS cooperativa.medics;
+        DROP TABLE IF EXISTS cooperativa.specialities;
+        DROP TABLE IF EXISTS cooperativa.affiliated_entities;
+        DROP TABLE IF EXISTS cooperativa.banks;
+        """;
+        MySqlCommand cmd = new(deleteAll, Connection);
+        await cmd.ExecuteNonQueryAsync();
     }
 
     private async Task AddPlan(string nome, float desconto, float preco)
