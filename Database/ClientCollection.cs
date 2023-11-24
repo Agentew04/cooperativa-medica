@@ -30,7 +30,7 @@ public class ClientCollection : BaseCollection<Client> {
         MySqlCommand cmd = new("INSERT INTO clients (nome, cpf, data_nasc, plan_id) VALUES (@nome, @cpf, @data_nasc, @plan_id)");
         cmd.Parameters.AddWithValue("@nome", item.Nome);
         cmd.Parameters.AddWithValue("@cpf", item.Cpf);
-        cmd.Parameters.AddWithValue("@data_nasc", item.DataNascimento.ToDateTime(TimeOnly.MinValue));
+        cmd.Parameters.AddWithValue("@data_nasc", item.DataNascimento.ToString("yyyy/MM/dd"));
         cmd.Parameters.AddWithValue("@plan_id", item.Plan?.Id);
         return cmd;
     }
@@ -46,7 +46,7 @@ public class ClientCollection : BaseCollection<Client> {
         cmd.Parameters.AddWithValue("@id", item.Id);
         cmd.Parameters.AddWithValue("@nome", item.Nome);
         cmd.Parameters.AddWithValue("@cpf", item.Cpf);
-        cmd.Parameters.AddWithValue("@data_nasc", item.DataNascimento);
+        cmd.Parameters.AddWithValue("@data_nasc", item.DataNascimento.ToString("yyyy/MM/dd"));
         cmd.Parameters.AddWithValue("@plan_id", item.Plan?.Id);
         return cmd;
     }

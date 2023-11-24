@@ -219,7 +219,7 @@ public class DatabaseService
         // """;
         // cmd = new(addDefaultServices, Connection);
         // await cmd.ExecuteNonQueryAsync();
-        ClienteCollection clienteCollection = new();
+        ClientCollection clienteCollection = new();
         await clienteCollection.AddAsync(new Client()
         {
             Nome = "João",
