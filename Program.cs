@@ -34,6 +34,7 @@ public class Program
                 case 2:
                     break;
                 case 3:
+                    await PlanMenu.Run();
                     break;
                 case 4:
                     break;
