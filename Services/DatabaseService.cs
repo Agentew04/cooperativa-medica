@@ -1,5 +1,7 @@
 using System.Reflection.Metadata.Ecma335;
 using MySql.Data.MySqlClient;
+using CoopMedica.Database;
+using CoopMedica.Models;
 
 namespace CoopMedica.Services;
 
@@ -193,16 +195,19 @@ public class DatabaseService
     {
         string addDefaultClients = $"""
         INSERT INTO cooperativa.clients (nome, cpf, data_nasc, plan_id)
-        VALUES ("{nome}", "{cpf}", "{data_nasc}", {plan_id});
+        VALUES (@nome, @cpf, @data_nasc, @plan_id);
         """;
         MySqlCommand cmd = new(addDefaultClients, Connection);
+        cmd.Parameters.AddWithValue("@nome", nome);
+        cmd.Parameters.AddWithValue("@cpf", cpf);
+        cmd.Parameters.AddWithValue("@data_nasc", data_nasc);
+        cmd.Parameters.AddWithValue("@plan_id", plan_id);
+        await cmd.PrepareAsync();
         await cmd.ExecuteNonQueryAsync();
     }
 
     private async Task AddValues()
     {
-        MySqlCommand cmd;
-
 
         await AddPlan("Unimed", 0.9f, 1000);
         await AddPlan("Saude Caixa", 0.8f, 800);
@@ -215,13 +220,18 @@ public class DatabaseService
         // """;
         // cmd = new(addDefaultServices, Connection);
         // await cmd.ExecuteNonQueryAsync();
-
-        await AddClient("João", "123.456.789-10", "2000/01/01", 0);
-        string addDefaultClients = """
-        INSERT INTO cooperativa.clients (nome, cpf, data_nasc, plan_id)
-        VALUES ("Pedro", "312.231.415-12", "2004/05/04", NULL);
-        """;
-        cmd = new(addDefaultClients, Connection);
-        await cmd.ExecuteNonQueryAsync();
+        ClienteCollection clienteCollection = new();
+        await clienteCollection.AddAsync(new Client()
+        {
+            Nome = "João",
+            Cpf = "123.456.789-10",
+            DataNascimento = DateOnly.FromDateTime(new DateTime(2000, 01, 01)),
+            Plan = new Plan()
+            {
+                Id = 1,
+            }
+        });
+        // await AddClient("João", "123.456.789-10", "2000/01/01", 1);
+        await AddClient("Pedro", "312.231.415-12", "2004/05/04", 2);
     }
 }
