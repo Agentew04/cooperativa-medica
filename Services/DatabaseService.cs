@@ -51,30 +51,6 @@ public class DatabaseService
         MySqlCommand cmd;
         await DeleteAll();
 
-        string clientsTable = """
-        CREATE TABLE IF NOT EXISTS `cooperativa`.`clients` (
-        `client_id` INT NOT NULL AUTO_INCREMENT,
-        `nome` VARCHAR(45) NOT NULL,
-        `cpf` VARCHAR(45) NOT NULL,
-        `data_nasc` DATE NOT NULL,
-        `plan_id` INT NULL,
-        PRIMARY KEY (`client_id`),
-        FOREIGN KEY (`plan_id`) REFERENCES `cooperativa`.`plans` (`plan_id`));
-        """;
-        cmd = new(clientsTable, Connection);
-        await cmd.ExecuteNonQueryAsync();
-
-        string dependantsTable = """
-        CREATE TABLE IF NOT EXISTS `cooperativa`.`dependants` (
-        `dependant_id` INT NOT NULL AUTO_INCREMENT,
-        `nome` VARCHAR(45) NULL,
-        `client_id` INT NULL,
-        PRIMARY KEY (`dependant_id`),
-        FOREIGN KEY (`client_id`) REFERENCES `cooperativa`.`clients` (`client_id`));
-        """;
-        cmd = new(dependantsTable, Connection);
-        await cmd.ExecuteNonQueryAsync();
-
         string plansTable = """
         CREATE TABLE IF NOT EXISTS `cooperativa`.`plans` (
         `plan_id` INT NOT NULL AUTO_INCREMENT,
@@ -106,6 +82,40 @@ public class DatabaseService
         cmd = new(affiliatedEntitiesTable, Connection);
         await cmd.ExecuteNonQueryAsync();
 
+        string banksTable = """
+        CREATE TABLE IF NOT EXISTS `cooperativa`.`banks` (
+        `bank_id` INT NOT NULL AUTO_INCREMENT,
+        `nome` VARCHAR(45) NULL,
+        PRIMARY KEY(`bank_id`)
+        );
+        """;
+        cmd = new(banksTable, Connection);
+        await cmd.ExecuteNonQueryAsync();
+
+        string clientsTable = """
+        CREATE TABLE IF NOT EXISTS `cooperativa`.`clients` (
+        `client_id` INT NOT NULL AUTO_INCREMENT,
+        `nome` VARCHAR(45) NOT NULL,
+        `cpf` VARCHAR(45) NOT NULL,
+        `data_nasc` DATE NOT NULL,
+        `plan_id` INT NULL,
+        PRIMARY KEY (`client_id`),
+        FOREIGN KEY (`plan_id`) REFERENCES `cooperativa`.`plans` (`plan_id`));
+        """;
+        cmd = new(clientsTable, Connection);
+        await cmd.ExecuteNonQueryAsync();
+
+        string dependantsTable = """
+        CREATE TABLE IF NOT EXISTS `cooperativa`.`dependants` (
+        `dependant_id` INT NOT NULL AUTO_INCREMENT,
+        `nome` VARCHAR(45) NULL,
+        `client_id` INT NULL,
+        PRIMARY KEY (`dependant_id`),
+        FOREIGN KEY (`client_id`) REFERENCES `cooperativa`.`clients` (`client_id`));
+        """;
+        cmd = new(dependantsTable, Connection);
+        await cmd.ExecuteNonQueryAsync();
+
         string servicesTable = """
         CREATE TABLE IF NOT EXISTS `cooperativa`.`services` (
         `service_id` INT NOT NULL AUTO_INCREMENT,
@@ -122,7 +132,6 @@ public class DatabaseService
         cmd = new(servicesTable, Connection);
         await cmd.ExecuteNonQueryAsync();
 
-
         string medicsTable = """
         CREATE TABLE IF NOT EXISTS `cooperativa`.`medics` (
         `medic_id` INT NOT NULL AUTO_INCREMENT,
@@ -132,16 +141,6 @@ public class DatabaseService
         FOREIGN KEY (`speciality_id`) REFERENCES `cooperativa`.`specialities` (`speciality_id`));
         """;
         cmd = new(medicsTable, Connection);
-        await cmd.ExecuteNonQueryAsync();
-
-        string banksTable = """
-        CREATE TABLE IF NOT EXISTS `cooperativa`.`banks` (
-        `bank_id` INT NOT NULL AUTO_INCREMENT,
-        `nome` VARCHAR(45) NULL,
-        PRIMARY KEY(`bank_id`)
-        );
-        """;
-        cmd = new(banksTable, Connection);
         await cmd.ExecuteNonQueryAsync();
 
         string paymentsTable = """
