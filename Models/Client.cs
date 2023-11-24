@@ -40,4 +40,8 @@ public class Client {
         await Task.Delay(500);
         return new List<Dependant>();
     }
+
+    public override string ToString() {
+        return $"{Id} {Nome} {Cpf} {DataNascimento} {Plan?.Id}";
+    }
 }
