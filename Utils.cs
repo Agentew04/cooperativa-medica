@@ -91,6 +91,38 @@ public static class Utils {
         return default;
     }
 
+    public static double ReadDouble(string prompt = "", bool allowNegative = false) {
+        bool ok = false;
+        Console.Write(prompt);
+        while (!ok) {
+            var color1 = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Green;
+            var input = Console.ReadLine() ?? "";
+            Console.ForegroundColor = color1;
+            ok = double.TryParse(input, out var result);
+            if (!ok) {
+                var color = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write("Valor inválido. Digite novamente: ");
+                Console.ForegroundColor = color;
+                continue;
+            }
+
+            if (!allowNegative && result < 0) {
+                var color = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write("Valor inválido. Digite um número positivo. Digite novamente: ");
+                Console.ForegroundColor = color;
+                ok = false;
+                continue;
+            }
+
+            return result;
+        }
+        return -1;
+
+    }
+
     /// <summary>
     /// Representa um intervalo de inteiros. Inclusivo em ambos os lados
     /// </summary>
