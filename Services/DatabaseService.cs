@@ -177,49 +177,28 @@ public class DatabaseService
         await cmd.ExecuteNonQueryAsync();
     }
 
-    private async Task AddPlan(string nome, float desconto, float preco)
-    {
-        string addDefaultPlans = $"""
-        INSERT INTO cooperativa.plans (nome, desconto, preco)
-        VALUES (@nome, @desconto, @preco);
-        """;
-        MySqlCommand cmd = new(addDefaultPlans, Connection);
-        cmd.Parameters.AddWithValue("@nome", nome);
-        cmd.Parameters.AddWithValue("@desconto", desconto);
-        cmd.Parameters.AddWithValue("@preco", preco);
-        await cmd.PrepareAsync();
-        await cmd.ExecuteNonQueryAsync();
-    }
-
-    private async Task AddClient(string nome, string cpf, string data_nasc, int plan_id)
-    {
-        string addDefaultClients = $"""
-        INSERT INTO cooperativa.clients (nome, cpf, data_nasc, plan_id)
-        VALUES (@nome, @cpf, @data_nasc, @plan_id);
-        """;
-        MySqlCommand cmd = new(addDefaultClients, Connection);
-        cmd.Parameters.AddWithValue("@nome", nome);
-        cmd.Parameters.AddWithValue("@cpf", cpf);
-        cmd.Parameters.AddWithValue("@data_nasc", data_nasc);
-        cmd.Parameters.AddWithValue("@plan_id", plan_id);
-        await cmd.PrepareAsync();
-        await cmd.ExecuteNonQueryAsync();
-    }
-
     private async Task AddValues()
     {
+        PlanCollection planCollection = new();
+        await planCollection.AddAsync(new Plan()
+        {
+            Name = "Unimed",
+            Discount = 0.9f,
+            Price = 1000
+        });
+        await planCollection.AddAsync(new Plan()
+        {
+            Name = "Saude Caixa",
+            Discount = 0.8f,
+            Price = 800
+        });
+        await planCollection.AddAsync(new Plan()
+        {
+            Name = "Ipe",
+            Discount = 0.7f,
+            Price = 600
+        });
 
-        await AddPlan("Unimed", 0.9f, 1000);
-        await AddPlan("Saude Caixa", 0.8f, 800);
-        await AddPlan("Ipe", 0.7f, 600);
-
-
-        // string addDefaultServices = """
-        // INSERT INTO cooperativa.services
-        // VALUES (``, 0.9, 1000)
-        // """;
-        // cmd = new(addDefaultServices, Connection);
-        // await cmd.ExecuteNonQueryAsync();
         ClienteCollection clienteCollection = new();
         await clienteCollection.AddAsync(new Client()
         {
@@ -231,7 +210,15 @@ public class DatabaseService
                 Id = 1,
             }
         });
-        // await AddClient("João", "123.456.789-10", "2000/01/01", 1);
-        await AddClient("Pedro", "312.231.415-12", "2004/05/04", 2);
+        await clienteCollection.AddAsync(new Client()
+        {
+            Nome = "Pedro",
+            Cpf = "312.231.415-12",
+            DataNascimento = DateOnly.FromDateTime(new DateTime(2004, 05, 04)),
+            Plan = new Plan()
+            {
+                Id = 2,
+            }
+        });
     }
 }
