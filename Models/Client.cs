@@ -42,6 +42,6 @@ public class Client {
     }
 
     public override string ToString() {
-        return $"{Id:-3} {Nome:10} {Cpf:14} {DataNascimento:10} {(Plan?.Id):+4}";
+        return $"{Id} {Nome} {Cpf} {DataNascimento} {Plan?.Id}";
     }
 }
