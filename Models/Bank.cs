@@ -5,5 +5,5 @@ public class Bank {
 
     public string Name {get;set;}
 
-    public List<Payment> Payments {get;set;} = new();
+    public List<ClientPayment> Payments {get;set;} = new();
 }

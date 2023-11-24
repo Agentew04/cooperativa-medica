@@ -12,7 +12,8 @@ public class MedicCollection : BaseCollection<Medic> {
         Medic medic = new() {
             Id = rs.GetInt32("medic_id"),
             Nome = rs.GetString("nome"),
-            SpecialtyId = rs.GetInt32("speciality_id")
+            SpecialtyId = rs.GetInt32("speciality_id"),
+            AffiliatedEntityId = rs.GetInt32("affiliated_entity_id")
         };
         return medic;
     }
