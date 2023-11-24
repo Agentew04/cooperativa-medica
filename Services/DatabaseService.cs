@@ -185,6 +185,16 @@ public class DatabaseService
         await cmd.ExecuteNonQueryAsync();
     }
 
+    private async Task AddClient(string nome, string cpf, string data_nasc, int plan_id)
+    {
+        string addDefaultClients = $"""
+        INSERT INTO cooperativa.clients (nome, cpf, data_nasc, plan_id)
+        VALUES ("{nome}", "{cpf}", "{data_nasc}", {plan_id});
+        """;
+        MySqlCommand cmd = new(addDefaultClients, Connection);
+        await cmd.ExecuteNonQueryAsync();
+    }
+
     private async Task AddValues()
     {
         MySqlCommand cmd;
@@ -202,7 +212,7 @@ public class DatabaseService
         // cmd = new(addDefaultServices, Connection);
         // await cmd.ExecuteNonQueryAsync();
 
-
+        await AddClient("João", "123.456.789-10", "2000/01/01", 0);
         string addDefaultClients = """
         INSERT INTO cooperativa.clients (nome, cpf, data_nasc, plan_id)
         VALUES ("Pedro", "312.231.415-12", "2004/05/04", NULL);
