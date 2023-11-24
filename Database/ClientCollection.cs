@@ -3,7 +3,7 @@ using MySql.Data.MySqlClient;
 
 namespace CoopMedica.Database; 
 
-public class ClienteCollection : BaseCollection<Client> {
+public class ClientCollection : BaseCollection<Client> {
     public override Client ReadResult(MySqlDataReader rs) {
         Client c = new Client {
             Id = rs.GetInt32(0),
@@ -30,7 +30,7 @@ public class ClienteCollection : BaseCollection<Client> {
         MySqlCommand cmd = new("INSERT INTO clients (nome, cpf, data_nasc, plan_id) VALUES (@nome, @cpf, @data_nasc, @plan_id)");
         cmd.Parameters.AddWithValue("@nome", item.Nome);
         cmd.Parameters.AddWithValue("@cpf", item.Cpf);
-        cmd.Parameters.AddWithValue("@data_nasc", item.DataNascimento);
+        cmd.Parameters.AddWithValue("@data_nasc", item.DataNascimento.ToDateTime(TimeOnly.MinValue));
         cmd.Parameters.AddWithValue("@plan_id", item.Plan?.Id);
         return cmd;
     }

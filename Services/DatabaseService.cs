@@ -78,7 +78,6 @@ public class DatabaseService
         `affiliated_entity_id` INT NOT NULL AUTO_INCREMENT,
         `nome` VARCHAR(45) NOT NULL,
         `cnpj` VARCHAR(45) NOT NULL,
-        `medic_id` INT NULL,
         PRIMARY KEY (`affiliated_entity_id`));
         """;
         cmd = new(affiliatedEntitiesTable, Connection);
