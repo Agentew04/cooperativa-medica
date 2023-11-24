@@ -46,6 +46,12 @@ public static class Utils {
         return -1;
     }
 
+    /// <summary>
+    /// Le uma string do usuario. Implementa validacao para strings vazias.
+    /// </summary>
+    /// <param name="prompt">O prompt a ser mostrado antes</param>
+    /// <param name="allowEmpty">Se o usuario pode inserir strings vazias</param>
+    /// <returns>A string lida</returns>
     public static string ReadString(string prompt = "", bool allowEmpty = false) {
         bool ok = false;
         Console.Write(prompt);
@@ -68,7 +74,11 @@ public static class Utils {
         return "";
     }
     
-    
+    /// <summary>
+    /// Le uma data do usuario.
+    /// </summary>
+    /// <param name="prompt">O prompt a ser mostrado</param>
+    /// <returns>A data lida</returns>
     public static DateOnly ReadDate(string prompt = "") {
         bool ok = false;
         Console.Write(prompt);
@@ -91,6 +101,12 @@ public static class Utils {
         return default;
     }
 
+    /// <summary>
+    /// Le um numero real do usuario.
+    /// </summary>
+    /// <param name="prompt"></param>
+    /// <param name="allowNegative"></param>
+    /// <returns></returns>
     public static double ReadDouble(string prompt = "", bool allowNegative = false) {
         bool ok = false;
         Console.Write(prompt);

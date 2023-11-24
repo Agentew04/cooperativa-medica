@@ -9,7 +9,8 @@ public class Program
     public static async Task Main(string[] args)
     {
         await DatabaseService.Instance.SetupDatabase();
-        while (true)
+        bool rodando = true;
+        while (rodando)
         {
             Console.WriteLine("==== Menu Principal ====");
             Console.WriteLine("Escolha uma opção: ");
@@ -21,6 +22,7 @@ public class Program
             Console.WriteLine("6 - Entidade Conveniada");
             Console.WriteLine("7 - Especialidade Médica");
             Console.WriteLine("8 - Serviço");
+            Console.WriteLine("9 - Sair");
 
             int opcao = Utils.ReadInt("> ", false, new(1, 8));
 
@@ -42,6 +44,9 @@ public class Program
                 case 7:
                     break;
                 case 8:
+                    break;
+                case 9:
+                    rodando = false;
                     break;
                 default:
                     Utils.Print("Input inválido", ConsoleColor.Red);
