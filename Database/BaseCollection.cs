@@ -86,7 +86,7 @@ public abstract class BaseCollection<T> where T : class
     /// Atualiza uma entidade na colecao. O item deve ter o campo Id preenchido.
     /// 
     /// <param name="item">O item a ser atualizado</param>
-    public async Task Update(T item)
+    public async Task UpdateAsync(T item)
     {
         MySqlCommand cmd = GetUpdateSQL(item);
         cmd.Connection = conn;

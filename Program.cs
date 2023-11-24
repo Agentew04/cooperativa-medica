@@ -8,9 +8,9 @@ public class Program
 {
     public static async Task Main(string[] args)
     {
+        Console.ResetColor();
+        Console.Clear();
         await DatabaseService.Instance.SetupDatabase();
-        var dt = Utils.ReadDateNew("> ");
-        return;
         bool rodando = true;
         while (rodando)
         {
@@ -26,7 +26,7 @@ public class Program
             Console.WriteLine("8 - Serviço");
             Console.WriteLine("9 - Sair");
 
-            int opcao = Utils.ReadInt("> ", false, new(1, 8));
+            int opcao = Utils.ReadInt("> ", false, new(1, 9));
 
             switch (opcao)
             {

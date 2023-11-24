@@ -1,3 +1,4 @@
+using MySqlX.XDevAPI.Common;
 using System.Text;
 
 namespace CoopMedica;
@@ -13,33 +14,30 @@ public static class Utils {
         bool ok = false;
         Console.Write(prompt);
         while(!ok){
-            var color1 = Console.ForegroundColor;
-            Console.ForegroundColor = ConsoleColor.Green;
+            Console.ForegroundColor = ConsoleColor.Blue;
             var input = Console.ReadLine();
-            Console.ForegroundColor = color1;
+            Console.ResetColor();
             ok = int.TryParse(input, out int result);
             if(!ok){
                 var color = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.Write("Valor inválido. Digite novamente: ");
-                Console.ForegroundColor = color;
+                Console.ResetColor();
                 continue;
             }
 
             if(!allowNegative && result < 0){
-                var color = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.Write("Valor inválido. Digite um número positivo. Digite novamente: ");
-                Console.ForegroundColor = color;
+                Console.ResetColor();
                 ok = false;
                 continue;
             }
 
             if(range is not null && !range.Contains(result)){
-                var color = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.Write($"Valor inválido. Digite um número entre {range.Start} e {range.End}. Digite novamente: ");
-                Console.ForegroundColor = color;
+                Console.ResetColor();
                 ok = false;
                 continue;
             }
@@ -58,15 +56,13 @@ public static class Utils {
         bool ok = false;
         Console.Write(prompt);
         while (!ok) {
-            var color1 = Console.ForegroundColor;
-            Console.ForegroundColor = ConsoleColor.Green;
+            Console.ForegroundColor = ConsoleColor.Blue;
             var input = Console.ReadLine() ?? "";
-            Console.ForegroundColor = color1;
+            Console.ResetColor();
             if (!allowEmpty && string.IsNullOrWhiteSpace(input)) {
-                var color = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.Write("Valor inválido. Digite novamente: ");
-                Console.ForegroundColor = color;
+                Console.ResetColor();
                 ok = false;
                 continue;
             }
@@ -80,12 +76,16 @@ public static class Utils {
     /// Le uma data do usuario.
     /// </summary>
     /// <param name="prompt">O prompt a ser mostrado</param>
+    /// <param name="validation">Uma funcao de validacao para o input</param>
     /// <returns>A data lida</returns>
-    public static DateOnly ReadDate(string prompt = "") {
+    public static DateOnly ReadDate(string prompt = "", Predicate<DateOnly>? validation = null) {
         bool ok = false;
         Console.Write(prompt);
         string pattern = "  /  /    ";
         string content = "";
+        Console.ForegroundColor = ConsoleColor.Blue;
+        PrintMaskedContent(pattern, content);
+        Console.CursorLeft = prompt.Length + content.Length + pattern[..(content.Length + 1)].Count(x => x != ' ');
         while (!ok) {
             ConsoleKeyInfo key;
             do {
@@ -104,19 +104,7 @@ public static class Utils {
                 }
 
                 Console.CursorLeft = prompt.Length;
-                // print pattern + content
-                Queue<char> contentStack = new(content);
-                for (int i = 0; i < pattern.Length; i++) {
-                    if (pattern[i] != ' ') {
-                        Console.Write(pattern[i]); //pattern char
-                    } else {
-                        if (contentStack.Count > 0) {
-                            Console.Write(contentStack.Dequeue()); //content char
-                        } else {
-                            Console.Write(' ');//empty space
-                        }
-                    }
-                }
+                PrintMaskedContent(pattern, content);
                 Console.CursorLeft = prompt.Length + content.Length + pattern[..(content.Length + 1)].Count(x => x != ' ');
             } while (key.Key != ConsoleKey.Enter);
 
@@ -133,10 +121,78 @@ public static class Utils {
             }
             ok = DateOnly.TryParse(result.ToString(), out var date);
             if (ok) {
-                return date;
+                if ((validation is not null && validation(date)) || validation is null) {
+                    Console.ResetColor();
+                    Console.WriteLine();
+                    return date;
+                }
             }
         }
         return default;
+    }
+
+    private static void PrintMaskedContent(string pattern, string content) {
+        Queue<char> contentStack = new(content);
+        for (int i = 0; i < pattern.Length; i++) {
+            if (pattern[i] != ' ') {
+                Console.Write(pattern[i]); //pattern char
+            } else {
+                if (contentStack.Count > 0) {
+                    Console.Write(contentStack.Dequeue()); //content char
+                } else {
+                    Console.Write(' ');//empty space
+                }
+            }
+        }
+    }
+
+    public static string ReadMaskedString(string prompt, string pattern) {
+        bool ok = false;
+        Console.Write(prompt);
+        string content = "";
+        Console.ForegroundColor = ConsoleColor.Blue;
+        PrintMaskedContent(pattern, content);
+        Console.CursorLeft = prompt.Length + content.Length + pattern[..(content.Length + 1)].Count(x => x != ' ');
+        while (!ok) {
+            ConsoleKeyInfo key;
+            do {
+                key = Console.ReadKey(true);
+
+                if (key.Key == ConsoleKey.Enter) {
+                    continue;
+                }
+                if (key.Key == ConsoleKey.Backspace) {
+                    if (content.Length > 0)
+                        content = content[..^1];
+                } else {
+                    if (key.KeyChar >= '0' && key.KeyChar <= '9'
+                        && content.Length < pattern.Count(x => x == ' '))
+                        content += key.KeyChar;
+                }
+
+                Console.CursorLeft = prompt.Length;
+                PrintMaskedContent(pattern, content);
+                Console.CursorLeft = prompt.Length + content.Length + pattern[..(content.Length + 1)].Count(x => x != ' ');
+            } while (key.Key != ConsoleKey.Enter);
+
+            StringBuilder result = new();
+            for (int i = 0; i < pattern.Length; i++) {
+                if (pattern[i] != ' ') {
+                    result.Append(pattern[i]);
+                } else {
+                    if (content.Length > 0) {
+                        result.Append(content[0]);
+                        content = content[1..];
+                    }
+                }
+            }
+            if(result.Length == pattern.Length) {
+                Console.ResetColor();
+                Console.WriteLine();
+                return result.ToString();
+            }
+        }
+        return string.Empty;
     }
 
     /// <summary>
@@ -149,24 +205,21 @@ public static class Utils {
         bool ok = false;
         Console.Write(prompt);
         while (!ok) {
-            var color1 = Console.ForegroundColor;
-            Console.ForegroundColor = ConsoleColor.Green;
+            Console.ForegroundColor = ConsoleColor.Blue;
             var input = Console.ReadLine() ?? "";
-            Console.ForegroundColor = color1;
+            Console.ResetColor();
             ok = double.TryParse(input, out var result);
             if (!ok) {
-                var color = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.Write("Valor inválido. Digite novamente: ");
-                Console.ForegroundColor = color;
+                Console.ResetColor();
                 continue;
             }
 
             if (!allowNegative && result < 0) {
-                var color = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.Write("Valor inválido. Digite um número positivo. Digite novamente: ");
-                Console.ForegroundColor = color;
+                Console.ResetColor();
                 ok = false;
                 continue;
             }
@@ -203,6 +256,6 @@ public static class Utils {
         color ??= Console.ForegroundColor;
         Console.ForegroundColor = color.Value;
         Console.WriteLine(msg);
-        Console.ForegroundColor = color.Value;
+        Console.ResetColor();
     }
 }
