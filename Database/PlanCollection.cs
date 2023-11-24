@@ -21,7 +21,6 @@ public class PlanCollection : BaseCollection<Plan> {
     protected override MySqlCommand GetDeleteSQL(Plan item) {
         MySqlCommand cmd = new("DELETE FROM plans WHERE plan_id = @plan");
         cmd.Parameters.AddWithValue("@plan", item.Id);
-        cmd.Prepare();
         return cmd;
     }
 
@@ -30,13 +29,11 @@ public class PlanCollection : BaseCollection<Plan> {
         cmd.Parameters.AddWithValue("@name", item.Name);
         cmd.Parameters.AddWithValue("@discount", item.Discount);
         cmd.Parameters.AddWithValue("@price", item.Price);
-        cmd.Prepare();
         return cmd;
     }
 
     protected override MySqlCommand GetSelectSQL() {
         MySqlCommand cmd = new("SELECT * FROM plans");
-        cmd.Prepare();
         return cmd;
     }
 
@@ -46,7 +43,6 @@ public class PlanCollection : BaseCollection<Plan> {
         cmd.Parameters.AddWithValue("@discount", item.Discount);
         cmd.Parameters.AddWithValue("@price", item.Price);
         cmd.Parameters.AddWithValue("@plan", item.Id);
-        cmd.Prepare();
         return cmd;
     }
 }

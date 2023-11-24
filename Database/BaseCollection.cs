@@ -41,6 +41,7 @@ public abstract class BaseCollection<T> where T : class {
     public async Task AddAsync(T item) {
         MySqlCommand cmd = GetInsertSQL(item);
         cmd.Connection = conn;
+        await cmd.PrepareAsync();
 
         await cmd.ExecuteNonQueryAsync();
     }
@@ -52,6 +53,7 @@ public abstract class BaseCollection<T> where T : class {
     public async Task RemoveAsync(T item) {
         MySqlCommand cmd = GetDeleteSQL(item);
         cmd.Connection = conn;
+        await cmd.PrepareAsync();
 
         await cmd.ExecuteNonQueryAsync();
     }
@@ -79,6 +81,7 @@ public abstract class BaseCollection<T> where T : class {
     public async Task Update(T item){
         MySqlCommand cmd = GetUpdateSQL(item);
         cmd.Connection = conn;
+        await cmd.PrepareAsync();
         
         await cmd.ExecuteNonQueryAsync();
     }
