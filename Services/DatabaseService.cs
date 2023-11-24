@@ -18,7 +18,7 @@ public class DatabaseService
     private DatabaseService()
     {
         // Singleton
-        string connectionString = @"server=localhost;userid=root;password=abc12345;database=cooperativa";
+        string connectionString = @$"server=localhost;userid={MysqlData.Username};password={MysqlData.Password};database=cooperativa";
 
         connection = new MySqlConnection(connectionString);
         isOpen = false;
