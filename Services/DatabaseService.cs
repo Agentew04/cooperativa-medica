@@ -6,15 +6,17 @@ namespace CoopMedica.Services;
 /// <summary>
 /// Classe que gerencia a logica de criar uma conexão com o banco de dados.
 /// </summary>
-public class DatabaseService{
-    
+public class DatabaseService
+{
+
     /// <summary>
     /// A unica instancia da classe DatabaseService.
     /// </summary>
     /// <returns></returns>
-    public static DatabaseService Instance {get;} = new();
+    public static DatabaseService Instance { get; } = new();
 
-    private DatabaseService(){
+    private DatabaseService()
+    {
         // Singleton
         string connectionString = @"server=localhost;userid=root;password=abc12345;database=cooperativa";
 
@@ -30,9 +32,12 @@ public class DatabaseService{
     /// Propriedade com a conexão com o banco de dados. 
     /// A abertura da conexao é <i>lazy</i>, ou seja, só é aberta quando a propriedade é acessada.
     /// </summary>
-    public MySqlConnection Connection {
-        get {
-            if(!isOpen) {
+    public MySqlConnection Connection
+    {
+        get
+        {
+            if (!isOpen)
+            {
                 connection.Open();
                 isOpen = true;
             }
@@ -41,7 +46,8 @@ public class DatabaseService{
         private set => connection = value;
     }
 
-    public async Task SetupDatabase(){
+    public async Task SetupDatabase()
+    {
         string clientsTable = """
         CREATE TABLE IF NOT EXISTS `cooperativa`.`clients` (
         `client_id` INT NOT NULL AUTO_INCREMENT,
@@ -66,7 +72,7 @@ public class DatabaseService{
         """;
         cmd = new(dependantsTable, Connection);
         await cmd.ExecuteNonQueryAsync();
-        
+
         string plansTable = """
         CREATE TABLE IF NOT EXISTS `cooperativa`.`plans` (
         `plan_id` INT NOT NULL AUTO_INCREMENT,
@@ -151,7 +157,8 @@ public class DatabaseService{
         await AddValues();
     }
 
-    private async Task AddPlan(string nome, float desconto, float preco) {
+    private async Task AddPlan(string nome, float desconto, float preco)
+    {
         string addDefaultPlans = $"""
         INSERT INTO cooperativa.plans (nome, desconto, preco)
         VALUES ("{nome}", {desconto}, {preco});
@@ -160,7 +167,8 @@ public class DatabaseService{
         await cmd.ExecuteNonQueryAsync();
     }
 
-    private async Task AddValues(){
+    private async Task AddValues()
+    {
         MySqlCommand cmd;
 
 
