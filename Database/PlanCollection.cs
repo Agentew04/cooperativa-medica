@@ -11,30 +11,42 @@ public class PlanCollection : BaseCollection<Plan> {
     public override Plan ReadResult(MySqlDataReader rs) {
         Plan plan = new() {
             Id = rs.GetInt32("plan_id"),
-            Name = rs.GetString("name"),
-            Price = rs.GetDecimal("price"),
-            Coverage = rs.GetDecimal("coverage"),
-            Bank = new() {
-                Id = rs.GetInt32("bank_id"),
-                Name = rs.GetString("bank_name")
-            }
+            Name = rs.GetString("nome"),
+            Discount= rs.GetFloat("desconto"),
+            Price= rs.GetFloat("preco")
         };
         return plan;
     }
 
     protected override MySqlCommand GetDeleteSQL(Plan item) {
-        throw new NotImplementedException();
+        MySqlCommand cmd = new("DELETE FROM plans WHERE plan_id = @plan");
+        cmd.Parameters.AddWithValue("@plan", item.Id);
+        cmd.Prepare();
+        return cmd;
     }
 
     protected override MySqlCommand GetInsertSQL(Plan item) {
-        throw new NotImplementedException();
+        MySqlCommand cmd = new("INSERT INTO plans (nome, desconto, preco) VALUES (@name, @discount, @price)");
+        cmd.Parameters.AddWithValue("@name", item.Name);
+        cmd.Parameters.AddWithValue("@discount", item.Discount);
+        cmd.Parameters.AddWithValue("@price", item.Price);
+        cmd.Prepare();
+        return cmd;
     }
 
     protected override MySqlCommand GetSelectSQL() {
-        throw new NotImplementedException();
+        MySqlCommand cmd = new("SELECT * FROM plans");
+        cmd.Prepare();
+        return cmd;
     }
 
     protected override MySqlCommand GetUpdateSQL(Plan item) {
-        throw new NotImplementedException();
+        MySqlCommand cmd = new("UPDATE plans SET nome = @name, desconto = @discount, preco = @price WHERE plan_id = @plan");
+        cmd.Parameters.AddWithValue("@name", item.Name);
+        cmd.Parameters.AddWithValue("@discount", item.Discount);
+        cmd.Parameters.AddWithValue("@price", item.Price);
+        cmd.Parameters.AddWithValue("@plan", item.Id);
+        cmd.Prepare();
+        return cmd;
     }
 }

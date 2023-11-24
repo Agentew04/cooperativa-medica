@@ -11,7 +11,7 @@ public class BankCollection : BaseCollection<Bank> {
     public override Bank ReadResult(MySqlDataReader rs) {
         Bank bank = new() {
             Id = rs.GetInt32("bank_id"),
-            Name = rs.GetString("name")
+            Name = rs.GetString("nome")
         };
         return bank;
     }
@@ -24,7 +24,7 @@ public class BankCollection : BaseCollection<Bank> {
     }
 
     protected override MySqlCommand GetInsertSQL(Bank item) {
-        MySqlCommand cmd = new("INSERT INTO banks (name) VALUES (@name)");
+        MySqlCommand cmd = new("INSERT INTO banks (nome) VALUES (@name)");
         cmd.Parameters.AddWithValue("@name", item.Name);
         cmd.Prepare();
         return cmd;
@@ -37,7 +37,7 @@ public class BankCollection : BaseCollection<Bank> {
     }
 
     protected override MySqlCommand GetUpdateSQL(Bank item) {
-        MySqlCommand cmd = new("UPDATE banks SET name = @name WHERE bank_id = @bank");
+        MySqlCommand cmd = new("UPDATE banks SET nome = @name WHERE bank_id = @bank");
         cmd.Parameters.AddWithValue("@name", item.Name);
         cmd.Parameters.AddWithValue("@bank", item.Id);
         cmd.Prepare();
