@@ -18,7 +18,6 @@ public class BankCollection : BaseCollection<Bank>
     {
         MySqlCommand cmd = new("DELETE FROM banks WHERE bank_id = @bank");
         cmd.Parameters.AddWithValue("@bank", item.Id);
-        cmd.Prepare();
         return cmd;
     }
 
@@ -26,14 +25,12 @@ public class BankCollection : BaseCollection<Bank>
     {
         MySqlCommand cmd = new("INSERT INTO banks (nome) VALUES (@name)");
         cmd.Parameters.AddWithValue("@name", item.Name);
-        cmd.Prepare();
         return cmd;
     }
 
     protected override MySqlCommand GetSelectSQL()
     {
         MySqlCommand cmd = new("SELECT * FROM banks");
-        cmd.Prepare();
         return cmd;
     }
 
@@ -42,7 +39,6 @@ public class BankCollection : BaseCollection<Bank>
         MySqlCommand cmd = new("UPDATE banks SET nome = @name WHERE bank_id = @bank");
         cmd.Parameters.AddWithValue("@name", item.Name);
         cmd.Parameters.AddWithValue("@bank", item.Id);
-        cmd.Prepare();
         return cmd;
     }
 }

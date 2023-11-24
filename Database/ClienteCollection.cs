@@ -15,9 +15,9 @@ public class ClienteCollection : BaseCollection<Client> {
             c.Plan = null;
         }
         else {
+            PlanCollection pc = new();
             // TODO get plan
         }
-        // TODO GET DEPENDANTS
         return c;
     }
 
@@ -32,14 +32,12 @@ public class ClienteCollection : BaseCollection<Client> {
         cmd.Parameters.AddWithValue("@cpf", item.Cpf);
         cmd.Parameters.AddWithValue("@data_nasc", item.DataNascimento);
         cmd.Parameters.AddWithValue("@plan_id", item.Plan?.Id);
-        cmd.Prepare();
         return cmd;
     }
 
     protected override MySqlCommand GetDeleteSQL(Client item) {
         MySqlCommand cmd = new("DELETE FROM clients WHERE client_id = @id");
         cmd.Parameters.AddWithValue("@id", item.Id);
-        cmd.Prepare();
         return cmd;
     }
 
@@ -50,7 +48,6 @@ public class ClienteCollection : BaseCollection<Client> {
         cmd.Parameters.AddWithValue("@cpf", item.Cpf);
         cmd.Parameters.AddWithValue("@data_nasc", item.DataNascimento);
         cmd.Parameters.AddWithValue("@plan_id", item.Plan?.Id);
-        cmd.Prepare();
         return cmd;
     }
 }

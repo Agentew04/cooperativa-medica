@@ -45,6 +45,7 @@ public abstract class BaseCollection<T> where T : class
     {
         MySqlCommand cmd = GetInsertSQL(item);
         cmd.Connection = conn;
+        await cmd.PrepareAsync();
 
         await cmd.ExecuteNonQueryAsync();
     }
@@ -57,6 +58,7 @@ public abstract class BaseCollection<T> where T : class
     {
         MySqlCommand cmd = GetDeleteSQL(item);
         cmd.Connection = conn;
+        await cmd.PrepareAsync();
 
         await cmd.ExecuteNonQueryAsync();
     }
@@ -88,6 +90,7 @@ public abstract class BaseCollection<T> where T : class
     {
         MySqlCommand cmd = GetUpdateSQL(item);
         cmd.Connection = conn;
+        await cmd.PrepareAsync();
 
         await cmd.ExecuteNonQueryAsync();
     }
