@@ -14,14 +14,15 @@ public class ClientCollection : BaseCollection<Client>
             Cpf = rs.GetString(2),
             DataNascimento = DateOnly.FromDateTime(rs.GetDateTime(3))
         };
-        if (!rs.IsDBNull(4))
+        if (rs.IsDBNull(4))
         {
             c.Plan = null;
         }
         else
         {
-            PlanCollection pc = new();
-            // TODO get plan
+            c.Plan = new() {
+                Id = rs.GetInt32(4)
+            };
         }
         return c;
     }
