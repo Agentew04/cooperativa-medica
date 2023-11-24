@@ -43,7 +43,7 @@ public class Program
                         Id = idPlano
                     }
                 };
-                ClienteCollection clienteCollection = new();
+                ClientCollection clienteCollection = new();
                 await clienteCollection.AddAsync(novoCliente);
                 Console.WriteLine("Cliente adicionado com sucesso!");
                 break;

@@ -28,7 +28,7 @@ public class ClientCollection : BaseCollection<Client>
 
     protected override MySqlCommand GetSelectSQL()
     {
-        MySqlCommand cmd = new("SELECT (client_id, nome, cpf, data_nasc, plan_id) FROM clients");
+        MySqlCommand cmd = new("SELECT * FROM clients");
         return cmd;
     }
 
