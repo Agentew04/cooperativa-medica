@@ -7,8 +7,7 @@ public class ClientCollection : BaseCollection<Client>
 {
     public override Client ReadResult(MySqlDataReader rs)
     {
-        Client c = new Client
-        {
+        Client c = new() {
             Id = rs.GetInt32(0),
             Nome = rs.GetString(1),
             Cpf = rs.GetString(2),

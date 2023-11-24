@@ -51,7 +51,7 @@ public class DatabaseService
     public async Task SetupDatabase()
     {
         MySqlCommand cmd;
-        await DeleteAll();
+        //await DeleteAll();
 
         string plansTable = """
         CREATE TABLE IF NOT EXISTS `cooperativa`.`plans` (
@@ -138,24 +138,40 @@ public class DatabaseService
         `medic_id` INT NOT NULL AUTO_INCREMENT,
         `nome` VARCHAR(45) NOT NULL,
         `speciality_id` INT NOT NULL,
+        `affiliated_entity_id` INT NOT NULL,
         PRIMARY KEY (`medic_id`),
-        FOREIGN KEY (`speciality_id`) REFERENCES `cooperativa`.`specialities` (`speciality_id`));
+        FOREIGN KEY (`speciality_id`) REFERENCES `cooperativa`.`specialities` (`speciality_id`),
+        FOREIGN KEY (`affiliated_entity_id`) REFERENCES `cooperativa`.`affiliated_entities` (`affiliated_entity_id`));
         """;
         cmd = new(medicsTable, Connection);
         await cmd.ExecuteNonQueryAsync();
 
-        string paymentsTable = """
-        CREATE TABLE IF NOT EXISTS `cooperativa`.`payments` (
-        `payment_id` INT NOT NULL AUTO_INCREMENT,
+        string clientPaymentsTable = """
+        CREATE TABLE IF NOT EXISTS `cooperativa`.`client_payments` (
+        `client_payment_id` INT NOT NULL AUTO_INCREMENT,
         `client_id` INT NOT NULL,
         `bank_id` INT NOT NULL,
         `valor` FLOAT NOT NULL,
-        PRIMARY KEY (`payment_id`),
+        PRIMARY KEY (`client_payment_id`),
         FOREIGN KEY (`client_id`) REFERENCES `cooperativa`.`clients` (`client_id`),
         FOREIGN KEY (`bank_id`) REFERENCES `cooperativa`.`banks` (`bank_id`));
         """;
-        cmd = new(paymentsTable, Connection);
+        cmd = new(clientPaymentsTable, Connection);
         await cmd.ExecuteNonQueryAsync();
+
+        string entityPaymentsTable = """
+        CREATE TABLE IF NOT EXISTS `cooperativa`.`entity_payments` (
+        `entity_payment_id` INT NOT NULL AUTO_INCREMENT,
+        `affiliated_entity_id` INT NOT NULL,
+        `bank_id` INT NOT NULL,
+        `valor` FLOAT NOT NULL,
+        PRIMARY KEY (`entity_payment_id`),
+        FOREIGN KEY (`affiliated_entity_id`) REFERENCES `cooperativa`.`affiliated_entities` (`affiliated_entity_id`),
+        FOREIGN KEY (`bank_id`) REFERENCES `cooperativa`.`banks` (`bank_id`));
+        """;
+        cmd = new(entityPaymentsTable, Connection);
+        await cmd.ExecuteNonQueryAsync();
+
         await AddValues();
     }
 
