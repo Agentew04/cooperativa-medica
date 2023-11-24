@@ -46,6 +46,50 @@ public static class Utils {
         return -1;
     }
 
+    public static string ReadString(string prompt = "", bool allowEmpty = false) {
+        bool ok = false;
+        Console.Write(prompt);
+        while (!ok) {
+            var color1 = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Green;
+            var input = Console.ReadLine() ?? "";
+            Console.ForegroundColor = color1;
+            if (!allowEmpty && string.IsNullOrWhiteSpace(input)) {
+                var color = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write("Valor inválido. Digite novamente: ");
+                Console.ForegroundColor = color;
+                ok = false;
+                continue;
+            }
+
+            return input;
+        }
+        return "";
+    }
+    
+    
+    public static DateOnly ReadDate(string prompt = "") {
+        bool ok = false;
+        Console.Write(prompt);
+        while (!ok) {
+            var color1 = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Green;
+            var input = Console.ReadLine() ?? "";
+            Console.ForegroundColor = color1;
+            ok = DateOnly.TryParse(input, out var result);
+            if (!ok) {
+                var color = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write("Valor inválido. Digite novamente: ");
+                Console.ForegroundColor = color;
+                continue;
+            }
+
+            return result;
+        }
+        return default;
+    }
 
     /// <summary>
     /// Representa um intervalo de inteiros. Inclusivo em ambos os lados
