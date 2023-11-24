@@ -116,7 +116,6 @@ public class DatabaseService{
 
 
         string medicsTable = """
-        DROP TABLE IF EXISTS `cooperativa`.`medics`;
         CREATE TABLE IF NOT EXISTS `cooperativa`.`medics` (
         `medic_id` INT NOT NULL AUTO_INCREMENT,
         `nome` VARCHAR(45) NOT NULL,
@@ -126,19 +125,48 @@ public class DatabaseService{
         """;
         cmd = new(medicsTable, Connection);
         await cmd.ExecuteNonQueryAsync();
-        
+
+        string banksTable = """
+        CREATE TABLE IF NOT EXISTS `cooperativa`.`banks` (
+        `bank_id` INT NOT NULL AUTO_INCREMENT,
+        `nome` VARCHAR(45) NULL,
+        PRIMARY KEY(`bank_id`)
+        );
+        """;
+        cmd = new(banksTable, Connection);
+        await cmd.ExecuteNonQueryAsync();
+
+        string paymentsTable = """
+        CREATE TABLE IF NOT EXISTS `cooperativa`.`payments` (
+        `payment_id` INT NOT NULL AUTO_INCREMENT,
+        `client_id` INT NOT NULL,
+        `bank_id` INT NOT NULL,
+        `valor` FLOAT NOT NULL,
+        PRIMARY KEY (`payment_id`),
+        FOREIGN KEY (`client_id`) REFERENCES `cooperativa`.`clients` (`client_id`),
+        FOREIGN KEY (`bank_id`) REFERENCES `cooperativa`.`banks` (`bank_id`));
+        """;
+        cmd = new(paymentsTable, Connection);
+        await cmd.ExecuteNonQueryAsync();
         await AddValues();
+    }
+
+    private async Task AddPlan(string nome, float desconto, float preco) {
+        string addDefaultPlans = $"""
+        INSERT INTO cooperativa.plans (nome, desconto, preco)
+        VALUES ("{nome}", {desconto}, {preco});
+        """;
+        MySqlCommand cmd = new(addDefaultPlans, Connection);
+        await cmd.ExecuteNonQueryAsync();
     }
 
     private async Task AddValues(){
         MySqlCommand cmd;
 
-        string addDefaultPlans = """
-        INSERT INTO cooperativa.plans (nome, desconto, preco)
-        VALUES ("Unimed", 0.9, 1000);
-        """;
-        cmd = new(addDefaultPlans, Connection);
-        await cmd.ExecuteNonQueryAsync();
+
+        await AddPlan("Unimed", 0.9f, 1000);
+        await AddPlan("Saude Caixa", 0.8f, 800);
+        await AddPlan("Ipe", 0.7f, 600);
 
 
         // string addDefaultServices = """
