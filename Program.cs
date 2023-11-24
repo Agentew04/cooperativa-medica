@@ -14,19 +14,17 @@ public class Program
         bool rodando = true;
         while (rodando)
         {
-            Console.WriteLine("==== Menu Principal ====");
-            Console.WriteLine("Escolha uma opção: ");
-            Console.WriteLine("1 - Cliente");
-            Console.WriteLine("2 - Dependente");
-            Console.WriteLine("3 - Plano");
-            Console.WriteLine("4 - Banco");
-            Console.WriteLine("5 - Pagamento");
-            Console.WriteLine("6 - Entidade Conveniada");
-            Console.WriteLine("7 - Especialidade Médica");
-            Console.WriteLine("8 - Serviço");
-            Console.WriteLine("9 - Sair");
-
-            int opcao = Utils.ReadInt("> ", false, new(1, 9));
+            int opcao = Menu.DisplayMenu("Menu Principal", new List<string> {
+                "Cliente",
+                "Dependente",
+                "Plano",
+                "Banco",
+                "Pagamento",
+                "Entidade Conveniada",
+                "Especialidade Médica",
+                "Serviço",
+                "Sair"
+            });
 
             switch (opcao)
             {

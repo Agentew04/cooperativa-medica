@@ -3,6 +3,10 @@ using System.Text;
 
 namespace CoopMedica;
 
+/// <summary>
+/// Classe que contém métodos variados que auxiliam majoritariamente com 
+/// a interação com o usuário.
+/// </summary>
 public static class Utils {
     /// <summary>
     /// Le e retorna um inteiro do usuario. Implementa validacao.
@@ -146,6 +150,12 @@ public static class Utils {
         }
     }
 
+    /// <summary>
+    /// Le uma string do usuario, com uma mascara.
+    /// </summary>
+    /// <param name="prompt">O prompt a ser mostrado antes do input</param>
+    /// <param name="pattern">O padrao/mascara a ser utilizado</param>
+    /// <returns>A string lida, com a mascara incluida</returns>
     public static string ReadMaskedString(string prompt, string pattern) {
         bool ok = false;
         Console.Write(prompt);
@@ -258,4 +268,5 @@ public static class Utils {
         Console.WriteLine(msg);
         Console.ResetColor();
     }
+   
 }

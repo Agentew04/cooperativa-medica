@@ -9,8 +9,7 @@ public class ClientMenu
 {
     public async static Task Run()
     {
-        Console.WriteLine("==== Menu Cliente ====");
-        int opcao = CrudMenu.Run();
+        int opcao = CrudMenu.Run("Menu Cliente");
         PlanCollection planCollection = new();
         ClientCollection clientCollection = new();
         switch (opcao)
@@ -92,5 +91,7 @@ public class ClientMenu
                     Utils.Print("Não existe um cliente com este identificador", ConsoleColor.Red);
                 break;
         }
+        Console.WriteLine("Pressione qualquer tecla para continuar...");
+        Console.ReadKey(true);
     }
 }

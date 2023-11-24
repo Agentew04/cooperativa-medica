@@ -51,7 +51,7 @@ public class DatabaseService
     public async Task SetupDatabase()
     {
         MySqlCommand cmd;
-        await DeleteAll();
+        //await DeleteAll();
 
         string plansTable = """
         CREATE TABLE IF NOT EXISTS `cooperativa`.`plans` (

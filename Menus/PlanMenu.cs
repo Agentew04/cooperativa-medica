@@ -8,8 +8,7 @@ public class PlanMenu
 {
     public async static Task Run()
     {
-        Console.WriteLine("==== Menu Plano ====");
-        int opcao = CrudMenu.Run();
+        int opcao = CrudMenu.Run("Menu Plano");
         PlanCollection planoCollection = new();
         switch (opcao)
         {
@@ -81,5 +80,7 @@ public class PlanMenu
                 Utils.Print("Input inválido", ConsoleColor.Red);
                 break;
         }
+        Console.WriteLine("Pressione qualquer tecla para continuar...");
+        Console.ReadKey(true); // espera por uma tecla
     }
 }
