@@ -179,9 +179,13 @@ public class DatabaseService
     {
         string addDefaultPlans = $"""
         INSERT INTO cooperativa.plans (nome, desconto, preco)
-        VALUES ("{nome}", {desconto}, {preco});
+        VALUES (@nome, @desconto, @preco);
         """;
         MySqlCommand cmd = new(addDefaultPlans, Connection);
+        cmd.Parameters.AddWithValue("@nome", nome);
+        cmd.Parameters.AddWithValue("@desconto", desconto);
+        cmd.Parameters.AddWithValue("@preco", preco);
+        await cmd.PrepareAsync();
         await cmd.ExecuteNonQueryAsync();
     }
 
