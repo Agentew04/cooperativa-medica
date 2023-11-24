@@ -9,6 +9,8 @@ public class Program
     public static async Task Main(string[] args)
     {
         await DatabaseService.Instance.SetupDatabase();
+        var dt = Utils.ReadDateNew("> ");
+        return;
         bool rodando = true;
         while (rodando)
         {

@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace CoopMedica;
 
 public static class Utils {
@@ -82,21 +84,57 @@ public static class Utils {
     public static DateOnly ReadDate(string prompt = "") {
         bool ok = false;
         Console.Write(prompt);
+        string pattern = "  /  /    ";
+        string content = "";
         while (!ok) {
-            var color1 = Console.ForegroundColor;
-            Console.ForegroundColor = ConsoleColor.Green;
-            var input = Console.ReadLine() ?? "";
-            Console.ForegroundColor = color1;
-            ok = DateOnly.TryParse(input, out var result);
-            if (!ok) {
-                var color = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Write("Valor inválido. Digite novamente: ");
-                Console.ForegroundColor = color;
-                continue;
-            }
+            ConsoleKeyInfo key;
+            do {
+                key = Console.ReadKey(true);
 
-            return result;
+                if (key.Key == ConsoleKey.Enter) {
+                    continue;
+                }
+                if (key.Key == ConsoleKey.Backspace) {
+                    if (content.Length > 0)
+                        content = content[..^1];
+                } else {
+                    if (key.KeyChar >= '0' && key.KeyChar <= '9'
+                        && content.Length < pattern.Count(x => x == ' '))
+                        content += key.KeyChar;
+                }
+
+                Console.CursorLeft = prompt.Length;
+                // print pattern + content
+                Queue<char> contentStack = new(content);
+                for (int i = 0; i < pattern.Length; i++) {
+                    if (pattern[i] != ' ') {
+                        Console.Write(pattern[i]); //pattern char
+                    } else {
+                        if (contentStack.Count > 0) {
+                            Console.Write(contentStack.Dequeue()); //content char
+                        } else {
+                            Console.Write(' ');//empty space
+                        }
+                    }
+                }
+                Console.CursorLeft = prompt.Length + content.Length + pattern[..(content.Length + 1)].Count(x => x != ' ');
+            } while (key.Key != ConsoleKey.Enter);
+
+            StringBuilder result = new();
+            for (int i = 0; i < pattern.Length; i++) {
+                if (pattern[i] != ' ') {
+                    result.Append(pattern[i]);
+                } else {
+                    if (content.Length > 0) {
+                        result.Append(content[0]);
+                        content = content[1..];
+                    }
+                }
+            }
+            ok = DateOnly.TryParse(result.ToString(), out var date);
+            if (ok) {
+                return date;
+            }
         }
         return default;
     }
