@@ -66,6 +66,14 @@ public class ClientMenu
                     Console.WriteLine(cliente);
                 }
                 break;
+            case 4:
+                Console.WriteLine("==== Remover Cliente ====");
+                Console.WriteLine("Digite o id do cliente: ");
+                idCliente = Utils.ReadInt("", false);
+                clienteCollection = new();
+                await clienteCollection.RemoveAsync(x => x.Id == idCliente);
+                Console.WriteLine("Cliente removido com sucesso!");
+                break;
             default:
                 Console.WriteLine("Input inválido");
                 break;
