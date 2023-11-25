@@ -1,5 +1,4 @@
-﻿
-using CoopMedica.Services;
+﻿using CoopMedica.Services;
 using CoopMedica.Menus;
 using CoopMedica.Models;
 
@@ -34,6 +33,8 @@ public class Program
                     await clientMenu.Run();
                     break;
                 case 2:
+                    DependantMenu dependantMenu = new();
+                    await dependantMenu.Run();
                     break;
                 case 3:
                     PlanMenu planMenu = new();
