@@ -1,6 +1,7 @@
 ﻿
 using CoopMedica.Services;
 using CoopMedica.Menus;
+using CoopMedica.Models;
 
 namespace CoopMedica;
 
@@ -29,12 +30,14 @@ public class Program
             switch (opcao)
             {
                 case 1:
-                    await ClientMenu.Run();
+                    ClientMenu clientMenu = new();
+                    await clientMenu.Run();
                     break;
                 case 2:
                     break;
                 case 3:
-                    await PlanMenu.Run();
+                    PlanMenu planMenu = new();
+                    await planMenu.Run();
                     break;
                 case 4:
                     break;

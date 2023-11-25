@@ -51,7 +51,7 @@ public class DatabaseService
     public async Task SetupDatabase()
     {
         MySqlCommand cmd;
-        //await DeleteAll();
+        await DeleteAll();
 
         string plansTable = """
         CREATE TABLE IF NOT EXISTS `cooperativa`.`plans` (
@@ -180,7 +180,8 @@ public class DatabaseService
         string deleteAll = """
         DROP TABLE IF EXISTS cooperativa.services;
         DROP TABLE IF EXISTS cooperativa.dependants;
-        DROP TABLE IF EXISTS cooperativa.payments;
+        DROP TABLE IF EXISTS cooperativa.client_payments;
+        DROP TABLE IF EXISTS cooperativa.entity_payments;
         DROP TABLE IF EXISTS cooperativa.clients;
         DROP TABLE IF EXISTS cooperativa.plans;
         DROP TABLE IF EXISTS cooperativa.medics;
