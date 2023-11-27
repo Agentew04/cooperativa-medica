@@ -41,12 +41,19 @@ public class Program
                     await planMenu.Run();
                     break;
                 case 4:
+                    BankMenu bankMenu = new();
+                    await bankMenu.Run();
                     break;
                 case 5:
+                    ClientPaymentMenu clientPaymentMenu = new();
+                    await clientPaymentMenu.Run();
                     break;
                 case 6:
+
                     break;
                 case 7:
+                    MedicalSpecialtyMenu medicalSpecialtyMenu = new();
+                    await medicalSpecialtyMenu.Run();
                     break;
                 case 8:
                     break;

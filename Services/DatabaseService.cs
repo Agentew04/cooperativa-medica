@@ -236,5 +236,19 @@ public class DatabaseService
                 Id = 2,
             }
         });
+
+        MedicalSpecialtyCollection medicalSpecialtyCollection = new();
+        await medicalSpecialtyCollection.AddAsync(new MedicalSpecialty()
+        {
+            Nome = "Cardiologia"
+        });
+        await medicalSpecialtyCollection.AddAsync(new MedicalSpecialty()
+        {
+            Nome = "Dermatologia"
+        });
+        await medicalSpecialtyCollection.AddAsync(new MedicalSpecialty()
+        {
+            Nome = "Endocrinologia"
+        });
     }
 }
