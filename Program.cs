@@ -22,6 +22,7 @@ public class Program
                 "Pagamento",
                 "Entidade Conveniada",
                 "Especialidade Médica",
+                "Médico",
                 "Serviço",
                 "Sair"
             });
@@ -57,6 +58,8 @@ public class Program
                     await medicalSpecialtyMenu.Run();
                     break;
                 case 8:
+                    MedicMenu medicMenu = new();
+                    await medicMenu.Run();
                     break;
                 case 9:
                     rodando = false;
