@@ -28,7 +28,7 @@ public class PlanMenu : AbstractMenu
     protected override async Task Edit() {
         Console.WriteLine("==== Editar Plano ====");
         Console.WriteLine("Digite o id do plano: ");
-        int idPlano = Utils.ReadInt("> ", false);
+        int idPlano = Utils.ReadInt("> ", false) ?? default;
         if (!await planCollection.Contains(x => x.Id == idPlano)) {
             Utils.Print("Não existe um plano com este id!", ConsoleColor.Red);
             return;
@@ -71,7 +71,7 @@ public class PlanMenu : AbstractMenu
     protected override async Task Remove() {
         Console.WriteLine("==== Remover Plano ====");
         Console.WriteLine("Digite o id do plano: ");
-        int idPlano = Utils.ReadInt("> ", false);
+        int idPlano = Utils.ReadInt("> ", false) ?? default;
 
         // check availability
         if (!await planCollection.Contains(x => x.Id == idPlano)) {

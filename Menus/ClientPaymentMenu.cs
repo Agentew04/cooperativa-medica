@@ -18,13 +18,13 @@ public class ClientPaymentMenu : AbstractMenu {
 
     protected override async Task Add() {
         Console.WriteLine("==== Adicionar Pagamento Cliente ====");
-        int idCliente = Utils.ReadInt("Id do Cliente: ");
+        int idCliente = Utils.ReadInt("Id do Cliente: ") ?? default;
         if (!await clientCollection.Contains(x => x.Id == idCliente)) {
             Utils.Print("Não existe cliente com este id!", ConsoleColor.Red);
             return;
         }
 
-        int idBanco = Utils.ReadInt("Id do Banco: ");
+        int idBanco = Utils.ReadInt("Id do Banco: ") ?? default;
         
         if (!await bankCollection.Contains(x => x.Id == idBanco)) {
             Utils.Print("Não existe banco com este id!", ConsoleColor.Red);
@@ -46,19 +46,19 @@ public class ClientPaymentMenu : AbstractMenu {
     protected override async Task Edit() {
         Console.WriteLine("==== Editar Pagamento do Cliente ====");
 
-        int idPagamento = Utils.ReadInt("> ", false);
+        int idPagamento = Utils.ReadInt("> ", false) ?? default;
         if (!await clientPaymentCollection.Contains(x => x.Id == idPagamento)) {
             Utils.Print("Não existe pagamento com este id!", ConsoleColor.Red);
             return;
         }
 
-        int idCliente = Utils.ReadInt("Id do Cliente: ");
+        int idCliente = Utils.ReadInt("Id do Cliente: ") ?? default;
         if (!await clientCollection.Contains(x => x.Id == idCliente)) {
             Utils.Print("Não existe cliente com este id!", ConsoleColor.Red);
             return;
         }
 
-        int idBanco = Utils.ReadInt("Id do Banco: ");
+        int idBanco = Utils.ReadInt("Id do Banco: ") ?? default;
         if(!await bankCollection.Contains(x => x.Id == idBanco)) {
             Utils.Print("Não existe banco com este id!", ConsoleColor.Red);
             return;
@@ -98,7 +98,7 @@ public class ClientPaymentMenu : AbstractMenu {
     protected override async Task Remove() {
         Console.WriteLine("==== Remover Pagamento do Cliente ====");
         Console.WriteLine("Digite o id do pagamento: ");
-        int idCliente = Utils.ReadInt("> ", false);
+        int idCliente = Utils.ReadInt("> ", false) ?? default;
         int removed = await clientPaymentCollection.RemoveAsync(x => x.Id == idCliente);
         if (removed > 0) {
             Utils.Print("Pagamento removido com sucesso!", ConsoleColor.Green);

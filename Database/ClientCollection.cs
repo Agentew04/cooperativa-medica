@@ -15,13 +15,11 @@ public class ClientCollection : BaseCollection<Client>
         };
         if (rs.IsDBNull(4))
         {
-            c.Plan = null;
+            c.PlanId = null;
         }
         else
         {
-            c.Plan = new() {
-                Id = rs.GetInt32(4)
-            };
+            c.PlanId = rs.GetInt32(4);
         }
         return c;
     }
@@ -38,7 +36,7 @@ public class ClientCollection : BaseCollection<Client>
         cmd.Parameters.AddWithValue("@nome", item.Nome);
         cmd.Parameters.AddWithValue("@cpf", item.Cpf);
         cmd.Parameters.AddWithValue("@data_nasc", item.DataNascimento.ToString("yyyy/MM/dd"));
-        cmd.Parameters.AddWithValue("@plan_id", item.Plan?.Id);
+        cmd.Parameters.AddWithValue("@plan_id", item.PlanId);
         return cmd;
     }
 
@@ -56,7 +54,7 @@ public class ClientCollection : BaseCollection<Client>
         cmd.Parameters.AddWithValue("@nome", item.Nome);
         cmd.Parameters.AddWithValue("@cpf", item.Cpf);
         cmd.Parameters.AddWithValue("@data_nasc", item.DataNascimento.ToString("yyyy/MM/dd"));
-        cmd.Parameters.AddWithValue("@plan_id", item.Plan?.Id);
+        cmd.Parameters.AddWithValue("@plan_id", item.PlanId);
         return cmd;
     }
 }

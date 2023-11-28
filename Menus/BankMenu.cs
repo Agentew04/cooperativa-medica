@@ -31,7 +31,7 @@ public class BankMenu : AbstractMenu {
     protected override async Task Edit() {
         Console.WriteLine("==== Editar Banco ====");
         Console.WriteLine("Digite o id do banco: ");
-        int idBanco = Utils.ReadInt("> ", false);
+        int idBanco = Utils.ReadInt("> ", false) ?? default;
         if (!await bankCollection.Contains(x => x.Id == idBanco)) {
             Utils.Print("Não existe banco com este id!", ConsoleColor.Red);
             return;
@@ -64,7 +64,7 @@ public class BankMenu : AbstractMenu {
     protected override async Task Remove() {
         Console.WriteLine("==== Remover Banco ====");
         Console.WriteLine("Digite o id do banco: ");
-        int idCliente = Utils.ReadInt("> ", false);
+        int idCliente = Utils.ReadInt("> ", false) ?? default;
         int removed = await bankCollection.RemoveAsync(x => x.Id == idCliente);
         if (removed > 0) {
             Utils.Print("Banco removido com sucesso!", ConsoleColor.Green);

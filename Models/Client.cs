@@ -4,32 +4,32 @@ namespace CoopMedica.Models;
 /// Classe do modelo que representa um cliente da cooperativa.
 /// </summary>
 public class Client {
-    
+
     /// <summary>
     /// O id principal do cliente.
     /// </summary>
-    public int Id {get;set;}
+    public int Id { get; set; }
 
     /// <summary>
     /// O nome do cliente
     /// </summary>
-    public string Nome {get;init;} = "";
-    
+    public string Nome { get; set; } = "";
+
     /// <summary>
     /// O cpf do cliente
     /// </summary>
-    public string Cpf {get;init;} = "";
-    
+    public string Cpf { get; set; } = "";
+
     /// <summary>
     /// Data de nascimento
     /// </summary>
-    public DateOnly DataNascimento {get;init;} = DateOnly.MinValue;
+    public DateOnly DataNascimento { get; set; } = DateOnly.MinValue;
 
     /// <summary>
     /// O plano que o cliente contrata. É nulo se o cliente
     /// não contratou nenhum plano ou se o plano foi cancelado.
     /// </summary>
-    public Plan? Plan {get;set;}
+    public int? PlanId { get; set; }
 
     /// <summary>
     /// Pega do banco de dados uma lista com os dependentes
@@ -42,6 +42,6 @@ public class Client {
     }
 
     public override string ToString() {
-        return $"{Id} {Nome} {Cpf} {DataNascimento} {Plan?.Id}";
+        return $"{Id} {Nome} {Cpf} {DataNascimento} {PlanId}";
     }
 }

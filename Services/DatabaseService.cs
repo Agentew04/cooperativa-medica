@@ -221,20 +221,14 @@ public class DatabaseService
             Nome = "João",
             Cpf = "123.456.789-10",
             DataNascimento = DateOnly.FromDateTime(new DateTime(2000, 01, 01)),
-            Plan = new Plan()
-            {
-                Id = 1,
-            }
+            PlanId = 1
         });
         await clienteCollection.AddAsync(new Client()
         {
             Nome = "Pedro",
             Cpf = "312.231.415-12",
             DataNascimento = DateOnly.FromDateTime(new DateTime(2004, 05, 04)),
-            Plan = new Plan()
-            {
-                Id = 2,
-            }
+            PlanId = 2
         });
     }
 }
