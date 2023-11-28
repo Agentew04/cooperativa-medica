@@ -37,10 +37,8 @@ public class BankMenu : AbstractMenu {
             return;
         }
 
-        Console.WriteLine("Digite o novo nome do banco: ");
-        string nome = Utils.ReadString("Nome: ");
         Bank bank = (await bankCollection.SelectOneAsync(x => x.Id == idBanco))!;
-        bank.Name = nome;
+        bank.Name = Utils.ReadString("Nome: ", defaultValue: bank.Name);
         await bankCollection.UpdateAsync(bank);
         Utils.Print("Banco editado com sucesso!", ConsoleColor.Green);
     }

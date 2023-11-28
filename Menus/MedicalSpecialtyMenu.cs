@@ -32,17 +32,16 @@ public class MedicalSpecialtyMenu : AbstractMenu
     {
         Console.WriteLine("==== Editar Especialidade Médica ====");
         Console.WriteLine("Digite o id da especialidade médica: ");
-        int idEspecialidade = Utils.ReadInt("> ", false);
+        int idEspecialidade = Utils.ReadInt("> ", false) ?? default;
         if (!await medicalSpecialtyCollection.Contains(x => x.Id == idEspecialidade))
         {
             Utils.Print("Não existe especialidade médica com este id!", ConsoleColor.Red);
             return;
         }
 
-        Console.WriteLine("Digite o novo nome da especialidade médica: ");
-        string nome = Utils.ReadString("Nome: ");
         MedicalSpecialty med = (await medicalSpecialtyCollection.SelectOneAsync(x => x.Id == idEspecialidade))!;
-        med.Nome = nome;
+        Console.WriteLine("Digite o novo nome da especialidade médica: ");
+        med.Nome = Utils.ReadString("Nome: ", defaultValue: med.Nome);
         await medicalSpecialtyCollection.UpdateAsync(med);
         Utils.Print("Especialidade médica editado com sucesso!", ConsoleColor.Green);
     }

@@ -34,19 +34,16 @@ public class AffiliatedEntityMenu : AbstractMenu
     {
         Console.WriteLine("==== Editar Entidade Afiliada ====");
         Console.WriteLine("Digite o id da entidade afiliada: ");
-        int idEntidadeAfiliada = Utils.ReadInt("> ", false);
+        int idEntidadeAfiliada = Utils.ReadInt("> ", false) ?? default;
         if (!await affiliatedEntityCollection.Contains(x => x.Id == idEntidadeAfiliada))
         {
             Utils.Print("Não existe entidade afiliada com este id!", ConsoleColor.Red);
             return;
         }
 
-        Console.WriteLine("Digite o novo nome da entidade afiliada: ");
-        string nome = Utils.ReadString("Nome: ");
-        string cpnj = Utils.ReadString("CNPJ: ");
         AffiliatedEntity aff = (await affiliatedEntityCollection.SelectOneAsync(x => x.Id == idEntidadeAfiliada))!;
-        aff.Nome = nome;
-        aff.Cnpj = cpnj;
+        aff.Nome = Utils.ReadString("Nome: ", defaultValue: aff.Nome);
+        aff.Cnpj = Utils.ReadString("CNPJ: ", defaultValue: aff.Cnpj);
         await affiliatedEntityCollection.UpdateAsync(aff);
         Utils.Print("Entidade afiliada editado com sucesso!", ConsoleColor.Green);
     }

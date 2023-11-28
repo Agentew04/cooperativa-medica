@@ -42,10 +42,8 @@ public class DependantMenu : AbstractMenu {
             return;
         }
         
-        Console.WriteLine("Digite o novo nome do dependente: ");
-        string nome = Utils.ReadString("Nome: ");
         Dependant dep = (await dependantCollection.SelectOneAsync(x => x.Id == idDependende))!;
-        dep.Nome = nome;
+        dep.Nome = Utils.ReadString("Nome: ", defaultValue: dep.Nome);
         await dependantCollection.UpdateAsync(dep);
         Utils.Print("Dependente editado com sucesso!", ConsoleColor.Green);
     }

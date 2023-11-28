@@ -52,25 +52,22 @@ public class ClientPaymentMenu : AbstractMenu {
             return;
         }
 
-        int idCliente = Utils.ReadInt("Id do Cliente: ") ?? default;
+        ClientPayment clientPayment = (await clientPaymentCollection.SelectOneAsync(x => x.Id == idPagamento))!;
+        int idCliente = Utils.ReadInt("Id do Cliente: ", defaultValue: clientPayment.ClientId) ?? default;
         if (!await clientCollection.Contains(x => x.Id == idCliente)) {
             Utils.Print("Não existe cliente com este id!", ConsoleColor.Red);
             return;
         }
+        clientPayment.ClientId = idCliente;
 
-        int idBanco = Utils.ReadInt("Id do Banco: ") ?? default;
+        int idBanco = Utils.ReadInt("Id do Banco: ", defaultValue: clientPayment.BankId) ?? default;
         if(!await bankCollection.Contains(x => x.Id == idBanco)) {
             Utils.Print("Não existe banco com este id!", ConsoleColor.Red);
             return;
         }
-
-        double valor = Utils.ReadDouble("Valor: ");
-
-        ClientPayment clientPayment = (await clientPaymentCollection.SelectOneAsync(x => x.Id == idPagamento))!;
-
-        clientPayment.ClientId = idCliente;
         clientPayment.BankId = idBanco;
-        clientPayment.Amount = (float)valor;
+
+        clientPayment.Amount = (float)Utils.ReadDouble("Valor: ", defaultValue: clientPayment.Amount);
 
         await clientPaymentCollection.UpdateAsync(clientPayment);
         Utils.Print("Dependente editado com sucesso!", ConsoleColor.Green);
