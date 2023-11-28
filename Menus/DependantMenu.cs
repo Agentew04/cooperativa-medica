@@ -17,7 +17,7 @@ public class DependantMenu : AbstractMenu {
     protected override async Task Add() {
         Console.WriteLine("==== Adicionar Dependente ====");
         Console.WriteLine("Digite o id do cliente: ");
-        int idCliente = Utils.ReadInt("> ", false);
+        int idCliente = Utils.ReadInt("> ", false) ?? default;
         if (!await clientCollection.Contains(x => x.Id == idCliente)) {
             Utils.Print("Não existe cliente com este id!", ConsoleColor.Red);
             return;
@@ -36,16 +36,14 @@ public class DependantMenu : AbstractMenu {
     protected override async Task Edit() {
         Console.WriteLine("==== Editar Dependente ====");
         Console.WriteLine("Digite o id do dependente: ");
-        int idDependende = Utils.ReadInt("> ", false);
+        int idDependende = Utils.ReadInt("> ", false) ?? default;
         if (!await dependantCollection.Contains(x => x.Id == idDependende)) {
             Utils.Print("Não existe dependente com este id!", ConsoleColor.Red);
             return;
         }
         
-        Console.WriteLine("Digite o novo nome do dependente: ");
-        string nome = Utils.ReadString("Nome: ");
         Dependant dep = (await dependantCollection.SelectOneAsync(x => x.Id == idDependende))!;
-        dep.Nome = nome;
+        dep.Nome = Utils.ReadString("Nome: ", defaultValue: dep.Nome);
         await dependantCollection.UpdateAsync(dep);
         Utils.Print("Dependente editado com sucesso!", ConsoleColor.Green);
     }
@@ -76,7 +74,7 @@ public class DependantMenu : AbstractMenu {
     protected override async Task Remove() {
         Console.WriteLine("==== Remover Dependente ====");
         Console.WriteLine("Digite o id do dependente: ");
-        int idCliente = Utils.ReadInt("> ", false);
+        int idCliente = Utils.ReadInt("> ", false) ?? default;
         int removed = await dependantCollection.RemoveAsync(x => x.Id == idCliente);
         if (removed > 0) {
             Utils.Print("Dependente removido com sucesso!", ConsoleColor.Green);

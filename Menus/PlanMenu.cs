@@ -28,23 +28,19 @@ public class PlanMenu : AbstractMenu
     protected override async Task Edit() {
         Console.WriteLine("==== Editar Plano ====");
         Console.WriteLine("Digite o id do plano: ");
-        int idPlano = Utils.ReadInt("> ", false);
+        int idPlano = Utils.ReadInt("> ", false) ?? default;
         if (!await planCollection.Contains(x => x.Id == idPlano)) {
             Utils.Print("Não existe um plano com este id!", ConsoleColor.Red);
             return;
         }
 
-        Console.WriteLine("Digite os novos nome, valor e desconto do plano: ");
-        string nome = Utils.ReadString("> ");
-        double valor = Utils.ReadDouble("> ");
-        double desconto = Utils.ReadDouble("> ");
-        Plan novoPlano = new() {
-            Id = idPlano,
-            Name = nome,
-            Price = (float)valor,
-            Discount = (float)desconto
-        };
-        await planCollection.UpdateAsync(novoPlano);
+        Plan plan = (await planCollection.SelectOneAsync(x => x.Id == idPlano))!;
+
+        plan.Name = Utils.ReadString("Nome: ", defaultValue: plan.Name);
+        plan.Price = (float)Utils.ReadDouble("Valor: ", defaultValue: plan.Price);
+        plan.Discount =(float) Utils.ReadDouble("Desconto: ", defaultValue: plan.Discount);
+        
+        await planCollection.UpdateAsync(plan);
         Console.WriteLine("Plano editado com sucesso!");
     }
 
@@ -71,7 +67,7 @@ public class PlanMenu : AbstractMenu
     protected override async Task Remove() {
         Console.WriteLine("==== Remover Plano ====");
         Console.WriteLine("Digite o id do plano: ");
-        int idPlano = Utils.ReadInt("> ", false);
+        int idPlano = Utils.ReadInt("> ", false) ?? default;
 
         // check availability
         if (!await planCollection.Contains(x => x.Id == idPlano)) {

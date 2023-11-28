@@ -101,7 +101,7 @@ public class DatabaseService
         `data_nasc` DATE NOT NULL,
         `plan_id` INT NULL,
         PRIMARY KEY (`client_id`),
-        FOREIGN KEY (`plan_id`) REFERENCES `cooperativa`.`plans` (`plan_id`));
+        FOREIGN KEY (`plan_id`) REFERENCES `cooperativa`.`plans` (`plan_id`) ON DELETE NO ACTION);
         """;
         cmd = new(clientsTable, Connection);
         await cmd.ExecuteNonQueryAsync();
@@ -112,25 +112,9 @@ public class DatabaseService
         `nome` VARCHAR(45) NULL,
         `client_id` INT NULL,
         PRIMARY KEY (`dependant_id`),
-        FOREIGN KEY (`client_id`) REFERENCES `cooperativa`.`clients` (`client_id`));
+        FOREIGN KEY (`client_id`) REFERENCES `cooperativa`.`clients` (`client_id`) ON DELETE CASCADE);
         """;
         cmd = new(dependantsTable, Connection);
-        await cmd.ExecuteNonQueryAsync();
-
-        string servicesTable = """
-        CREATE TABLE IF NOT EXISTS `cooperativa`.`services` (
-        `service_id` INT NOT NULL AUTO_INCREMENT,
-        `nome` VARCHAR(45) NOT NULL,
-        `preco` FLOAT NOT NULL,
-        `speciality_id` INT NOT NULL,
-        `client_id` INT NOT NULL,
-        `affiliated_entity_id` INT NOT NULL,
-        PRIMARY KEY (`service_id`),
-        FOREIGN KEY (`speciality_id`) REFERENCES `cooperativa`.`specialities` (`speciality_id`),
-        FOREIGN KEY (`client_id`) REFERENCES `cooperativa`.`clients` (`client_id`),
-        FOREIGN KEY (`affiliated_entity_id`) REFERENCES `cooperativa`.`affiliated_entities` (`affiliated_entity_id`));
-        """;
-        cmd = new(servicesTable, Connection);
         await cmd.ExecuteNonQueryAsync();
 
         string medicsTable = """
@@ -140,11 +124,29 @@ public class DatabaseService
         `speciality_id` INT NOT NULL,
         `affiliated_entity_id` INT NOT NULL,
         PRIMARY KEY (`medic_id`),
-        FOREIGN KEY (`speciality_id`) REFERENCES `cooperativa`.`specialities` (`speciality_id`),
-        FOREIGN KEY (`affiliated_entity_id`) REFERENCES `cooperativa`.`affiliated_entities` (`affiliated_entity_id`));
+        FOREIGN KEY (`speciality_id`) REFERENCES `cooperativa`.`specialities` (`speciality_id`) ON DELETE CASCADE,
+        FOREIGN KEY (`affiliated_entity_id`) REFERENCES `cooperativa`.`affiliated_entities` (`affiliated_entity_id`) ON DELETE CASCADE);
         """;
         cmd = new(medicsTable, Connection);
         await cmd.ExecuteNonQueryAsync();
+
+        string servicesTable = """
+        CREATE TABLE IF NOT EXISTS `cooperativa`.`services` (
+        `service_id` INT NOT NULL AUTO_INCREMENT,
+        `nome` VARCHAR(45) NOT NULL,
+        `preco` FLOAT NOT NULL,
+        `speciality_id` INT NOT NULL,
+        `client_id` INT NOT NULL,
+        `medic_id` INT NOT NULL,
+        PRIMARY KEY (`service_id`),
+        FOREIGN KEY (`speciality_id`) REFERENCES `cooperativa`.`specialities` (`speciality_id`) ON DELETE CASCADE,
+        FOREIGN KEY (`client_id`) REFERENCES `cooperativa`.`clients` (`client_id`) ON DELETE CASCADE,
+        FOREIGN KEY (`medic_id`) REFERENCES `cooperativa`.`medics` (`medic_id`) ON DELETE CASCADE);
+        """;
+        cmd = new(servicesTable, Connection);
+        await cmd.ExecuteNonQueryAsync();
+
+
 
         string clientPaymentsTable = """
         CREATE TABLE IF NOT EXISTS `cooperativa`.`client_payments` (
@@ -153,8 +155,8 @@ public class DatabaseService
         `bank_id` INT NOT NULL,
         `valor` FLOAT NOT NULL,
         PRIMARY KEY (`client_payment_id`),
-        FOREIGN KEY (`client_id`) REFERENCES `cooperativa`.`clients` (`client_id`),
-        FOREIGN KEY (`bank_id`) REFERENCES `cooperativa`.`banks` (`bank_id`));
+        FOREIGN KEY (`client_id`) REFERENCES `cooperativa`.`clients` (`client_id`) ON DELETE CASCADE,
+        FOREIGN KEY (`bank_id`) REFERENCES `cooperativa`.`banks` (`bank_id`) ON DELETE CASCADE);
         """;
         cmd = new(clientPaymentsTable, Connection);
         await cmd.ExecuteNonQueryAsync();
@@ -166,10 +168,45 @@ public class DatabaseService
         `bank_id` INT NOT NULL,
         `valor` FLOAT NOT NULL,
         PRIMARY KEY (`entity_payment_id`),
-        FOREIGN KEY (`affiliated_entity_id`) REFERENCES `cooperativa`.`affiliated_entities` (`affiliated_entity_id`),
-        FOREIGN KEY (`bank_id`) REFERENCES `cooperativa`.`banks` (`bank_id`));
+        FOREIGN KEY (`affiliated_entity_id`) REFERENCES `cooperativa`.`affiliated_entities` (`affiliated_entity_id`) ON DELETE CASCADE,
+        FOREIGN KEY (`bank_id`) REFERENCES `cooperativa`.`banks` (`bank_id`) ON DELETE CASCADE);
         """;
         cmd = new(entityPaymentsTable, Connection);
+        await cmd.ExecuteNonQueryAsync();
+
+        string servicesView = """
+        CREATE OR REPLACE VIEW ServiceView AS
+        SELECT
+            s.service_id AS ServiceId,
+            s.nome AS ServiceName,
+            s.preco AS ServiceCost,
+            ss.speciality_id AS SpecialtyId,
+            ss.nome AS SpecialtyName,
+            m.medic_id AS MedicId,
+            m.nome AS MedicName,
+            c.client_id AS ClientId,
+            c.nome AS ClientName
+        FROM
+            services s
+        JOIN
+            specialities ss ON s.speciality_id = ss.speciality_id
+        JOIN
+            medics m ON s.medic_id = m.medic_id
+        JOIN
+            clients c ON s.client_id = c.client_id;
+        """;
+        cmd = new(servicesView, Connection);
+        await cmd.ExecuteNonQueryAsync();
+
+        string plansTrigger = """
+        CREATE DEFINER = CURRENT_USER TRIGGER `cooperativa`.`plans_BEFORE_DELETE` BEFORE DELETE ON `plans` FOR EACH ROW
+        BEGIN
+            UPDATE `cooperativa`.`clients`
+            SET `plan_id` = NULL
+            WHERE `plan_id` = OLD.plan_id;
+        END
+        """;
+        cmd = new(plansTrigger, Connection);
         await cmd.ExecuteNonQueryAsync();
 
         await AddValues();
@@ -215,26 +252,142 @@ public class DatabaseService
             Price = 600
         });
 
+        BankCollection bankCollection = new();
+        await bankCollection.AddAsync(new Bank()
+        {
+            Name = "Banco do Brasil"
+        });
+        await bankCollection.AddAsync(new Bank()
+        {
+            Name = "Caixa Econômica Federal"
+        });
+
+        MedicalSpecialtyCollection medicalSpecialtyCollection = new();
+        await medicalSpecialtyCollection.AddAsync(new MedicalSpecialty()
+        {
+            Nome = "Cardiologia"
+        });
+        await medicalSpecialtyCollection.AddAsync(new MedicalSpecialty()
+        {
+            Nome = "Dermatologia"
+        });
+        await medicalSpecialtyCollection.AddAsync(new MedicalSpecialty()
+        {
+            Nome = "Endocrinologia"
+        });
+
+        AffiliatedEntityCollection affiliatedEntityCollection = new();
+        await affiliatedEntityCollection.AddAsync(new AffiliatedEntity()
+        {
+            Nome = "Hospital São Lucas",
+            Cnpj = "12.456.789/0001-10"
+        });
+        await affiliatedEntityCollection.AddAsync(new AffiliatedEntity()
+        {
+            Nome = "Hospital São José",
+            Cnpj = "12.456.789/0001-11"
+        });
+        await affiliatedEntityCollection.AddAsync(new AffiliatedEntity()
+        {
+            Nome = "Hospital São Marcos",
+            Cnpj = "123.456.789/0001-12"
+        });
+
         ClientCollection clienteCollection = new();
         await clienteCollection.AddAsync(new Client()
         {
             Nome = "João",
             Cpf = "123.456.789-10",
             DataNascimento = DateOnly.FromDateTime(new DateTime(2000, 01, 01)),
-            Plan = new Plan()
-            {
-                Id = 1,
-            }
+            PlanId = 1
         });
         await clienteCollection.AddAsync(new Client()
         {
             Nome = "Pedro",
             Cpf = "312.231.415-12",
             DataNascimento = DateOnly.FromDateTime(new DateTime(2004, 05, 04)),
-            Plan = new Plan()
-            {
-                Id = 2,
-            }
+            PlanId = 2
         });
+
+        ClientPaymentCollection clientPaymentCollection = new();
+        await clientPaymentCollection.AddAsync(new ClientPayment()
+        {
+            ClientId = 1,
+            BankId = 1,
+            Amount = 1000
+        });
+        await clientPaymentCollection.AddAsync(new ClientPayment()
+        {
+            ClientId = 2,
+            BankId = 2,
+            Amount = 800
+        });
+
+        DependantCollection dependantCollection = new();
+        await dependantCollection.AddAsync(new Dependant()
+        {
+            Nome = "Maria",
+            ClientId = 1
+        });
+        await dependantCollection.AddAsync(new Dependant()
+        {
+            Nome = "Joana",
+            ClientId = 1
+        });
+
+
+        EntityPaymentCollection entityPaymentCollection = new();
+        await entityPaymentCollection.AddAsync(new EntityPayment()
+        {
+            EntityId = 1,
+            BankId = 1,
+            Amount = 1000
+        });
+        await entityPaymentCollection.AddAsync(new EntityPayment()
+        {
+            EntityId = 2,
+            BankId = 2,
+            Amount = 800
+        });
+
+
+        MedicCollection medicCollection = new();
+        await medicCollection.AddAsync(new Medic()
+        {
+            Nome = "Dr. João",
+            SpecialtyId = 1,
+            AffiliatedEntityId = 1
+        });
+        await medicCollection.AddAsync(new Medic()
+        {
+            Nome = "Dr. Pedro",
+            SpecialtyId = 2,
+            AffiliatedEntityId = 2
+        });
+        await medicCollection.AddAsync(new Medic()
+        {
+            Nome = "Dr. José",
+            SpecialtyId = 3,
+            AffiliatedEntityId = 3
+        });
+
+        ServiceCollection serviceCollection = new();
+        await serviceCollection.AddAsync(new Service()
+        {
+            Name = "Consulta cardiologia",
+            Cost = 100,
+            MedicalSpecialtyId = 1,
+            MedicId = 1,
+            ClientId = 1
+        });
+        await serviceCollection.AddAsync(new Service()
+        {
+            Name = "Consulta dermatologia",
+            Cost = 100,
+            MedicalSpecialtyId = 2,
+            MedicId = 2,
+            ClientId = 2
+        });
+
     }
 }
