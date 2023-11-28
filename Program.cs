@@ -49,7 +49,8 @@ public class Program
                     await clientPaymentMenu.Run();
                     break;
                 case 6:
-
+                    AffiliatedEntityMenu affiliatedEntityMenu = new();
+                    await affiliatedEntityMenu.Run();
                     break;
                 case 7:
                     MedicalSpecialtyMenu medicalSpecialtyMenu = new();

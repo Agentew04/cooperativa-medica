@@ -13,7 +13,6 @@ public class MedicalSpecialtyMenu : AbstractMenu
     protected override string Title => "Menu Especialidade Médica";
 
     private MedicalSpecialtyCollection medicalSpecialtyCollection = new();
-    private ClientCollection clientCollection = new();
 
     protected override async Task Add()
     {
