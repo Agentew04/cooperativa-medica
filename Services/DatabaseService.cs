@@ -230,5 +230,19 @@ public class DatabaseService
             DataNascimento = DateOnly.FromDateTime(new DateTime(2004, 05, 04)),
             PlanId = 2
         });
+
+        MedicalSpecialtyCollection medicalSpecialtyCollection = new();
+        await medicalSpecialtyCollection.AddAsync(new MedicalSpecialty()
+        {
+            Nome = "Cardiologia"
+        });
+        await medicalSpecialtyCollection.AddAsync(new MedicalSpecialty()
+        {
+            Nome = "Dermatologia"
+        });
+        await medicalSpecialtyCollection.AddAsync(new MedicalSpecialty()
+        {
+            Nome = "Endocrinologia"
+        });
     }
 }
