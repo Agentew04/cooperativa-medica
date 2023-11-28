@@ -68,7 +68,7 @@ public class AffiliatedEntityMenu : AbstractMenu
     {
         Console.WriteLine("==== Remover Entidade Afiliada ====");
         Console.WriteLine("Digite o id da entidade afiliada: ");
-        int idAffiliatedEntity = Utils.ReadInt("> ", false);
+        int idAffiliatedEntity = Utils.ReadInt("> ", false) ?? default;
         int removed = await affiliatedEntityCollection.RemoveAsync(x => x.Id == idAffiliatedEntity);
         if (removed > 0)
         {

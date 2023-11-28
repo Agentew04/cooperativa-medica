@@ -19,11 +19,12 @@ public class Program
                 "Dependente",
                 "Plano",
                 "Banco",
-                "Pagamento",
+                "Pagamento Cliente",
                 "Entidade Conveniada",
                 "Especialidade Médica",
                 "Médico",
                 "Serviço",
+                "Pagamento Entidade Conveniada",
                 "Sair"
             });
 
@@ -62,6 +63,14 @@ public class Program
                     await medicMenu.Run();
                     break;
                 case 9:
+                    ServiceMenu serviceMenu = new();
+                    await serviceMenu.Run();
+                    break;
+                case 10:
+                    EntityPaymentMenu entityPaymentMenu = new();
+                    await entityPaymentMenu.Run();
+                    break;
+                case 11:
                     rodando = false;
                     break;
                 default:

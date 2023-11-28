@@ -117,22 +117,6 @@ public class DatabaseService
         cmd = new(dependantsTable, Connection);
         await cmd.ExecuteNonQueryAsync();
 
-        string servicesTable = """
-        CREATE TABLE IF NOT EXISTS `cooperativa`.`services` (
-        `service_id` INT NOT NULL AUTO_INCREMENT,
-        `nome` VARCHAR(45) NOT NULL,
-        `preco` FLOAT NOT NULL,
-        `speciality_id` INT NOT NULL,
-        `client_id` INT NOT NULL,
-        `affiliated_entity_id` INT NOT NULL,
-        PRIMARY KEY (`service_id`),
-        FOREIGN KEY (`speciality_id`) REFERENCES `cooperativa`.`specialities` (`speciality_id`),
-        FOREIGN KEY (`client_id`) REFERENCES `cooperativa`.`clients` (`client_id`),
-        FOREIGN KEY (`affiliated_entity_id`) REFERENCES `cooperativa`.`affiliated_entities` (`affiliated_entity_id`));
-        """;
-        cmd = new(servicesTable, Connection);
-        await cmd.ExecuteNonQueryAsync();
-
         string medicsTable = """
         CREATE TABLE IF NOT EXISTS `cooperativa`.`medics` (
         `medic_id` INT NOT NULL AUTO_INCREMENT,
@@ -145,6 +129,24 @@ public class DatabaseService
         """;
         cmd = new(medicsTable, Connection);
         await cmd.ExecuteNonQueryAsync();
+
+        string servicesTable = """
+        CREATE TABLE IF NOT EXISTS `cooperativa`.`services` (
+        `service_id` INT NOT NULL AUTO_INCREMENT,
+        `nome` VARCHAR(45) NOT NULL,
+        `preco` FLOAT NOT NULL,
+        `speciality_id` INT NOT NULL,
+        `client_id` INT NOT NULL,
+        `medic_id` INT NOT NULL,
+        PRIMARY KEY (`service_id`),
+        FOREIGN KEY (`speciality_id`) REFERENCES `cooperativa`.`specialities` (`speciality_id`),
+        FOREIGN KEY (`client_id`) REFERENCES `cooperativa`.`clients` (`client_id`),
+        FOREIGN KEY (`medic_id`) REFERENCES `cooperativa`.`medics` (`medic_id`));
+        """;
+        cmd = new(servicesTable, Connection);
+        await cmd.ExecuteNonQueryAsync();
+
+
 
         string clientPaymentsTable = """
         CREATE TABLE IF NOT EXISTS `cooperativa`.`client_payments` (
@@ -215,6 +217,47 @@ public class DatabaseService
             Price = 600
         });
 
+        BankCollection bankCollection = new();
+        await bankCollection.AddAsync(new Bank()
+        {
+            Name = "Banco do Brasil"
+        });
+        await bankCollection.AddAsync(new Bank()
+        {
+            Name = "Caixa Econômica Federal"
+        });
+
+        MedicalSpecialtyCollection medicalSpecialtyCollection = new();
+        await medicalSpecialtyCollection.AddAsync(new MedicalSpecialty()
+        {
+            Nome = "Cardiologia"
+        });
+        await medicalSpecialtyCollection.AddAsync(new MedicalSpecialty()
+        {
+            Nome = "Dermatologia"
+        });
+        await medicalSpecialtyCollection.AddAsync(new MedicalSpecialty()
+        {
+            Nome = "Endocrinologia"
+        });
+
+        AffiliatedEntityCollection affiliatedEntityCollection = new();
+        await affiliatedEntityCollection.AddAsync(new AffiliatedEntity()
+        {
+            Nome = "Hospital São Lucas",
+            Cnpj = "123.456.789/0001-10"
+        });
+        await affiliatedEntityCollection.AddAsync(new AffiliatedEntity()
+        {
+            Nome = "Hospital São José",
+            Cnpj = "123.456.789/0001-11"
+        });
+        await affiliatedEntityCollection.AddAsync(new AffiliatedEntity()
+        {
+            Nome = "Hospital São Marcos",
+            Cnpj = "123.456.789/0001-12"
+        });
+
         ClientCollection clienteCollection = new();
         await clienteCollection.AddAsync(new Client()
         {
@@ -231,18 +274,85 @@ public class DatabaseService
             PlanId = 2
         });
 
-        MedicalSpecialtyCollection medicalSpecialtyCollection = new();
-        await medicalSpecialtyCollection.AddAsync(new MedicalSpecialty()
+        ClientPaymentCollection clientPaymentCollection = new();
+        await clientPaymentCollection.AddAsync(new ClientPayment()
         {
-            Nome = "Cardiologia"
+            ClientId = 1,
+            BankId = 1,
+            Amount = 1000
         });
-        await medicalSpecialtyCollection.AddAsync(new MedicalSpecialty()
+        await clientPaymentCollection.AddAsync(new ClientPayment()
         {
-            Nome = "Dermatologia"
+            ClientId = 2,
+            BankId = 2,
+            Amount = 800
         });
-        await medicalSpecialtyCollection.AddAsync(new MedicalSpecialty()
+
+        DependantCollection dependantCollection = new();
+        await dependantCollection.AddAsync(new Dependant()
         {
-            Nome = "Endocrinologia"
+            Nome = "Maria",
+            ClientId = 1
         });
+        await dependantCollection.AddAsync(new Dependant()
+        {
+            Nome = "Joana",
+            ClientId = 1
+        });
+
+
+        EntityPaymentCollection entityPaymentCollection = new();
+        await entityPaymentCollection.AddAsync(new EntityPayment()
+        {
+            EntityId = 1,
+            BankId = 1,
+            Amount = 1000
+        });
+        await entityPaymentCollection.AddAsync(new EntityPayment()
+        {
+            EntityId = 2,
+            BankId = 2,
+            Amount = 800
+        });
+
+
+        MedicCollection medicCollection = new();
+        await medicCollection.AddAsync(new Medic()
+        {
+            Nome = "Dr. João",
+            SpecialtyId = 1,
+            AffiliatedEntityId = 1
+        });
+        await medicCollection.AddAsync(new Medic()
+        {
+            Nome = "Dr. Pedro",
+            SpecialtyId = 2,
+            AffiliatedEntityId = 2
+        });
+        await medicCollection.AddAsync(new Medic()
+        {
+            Nome = "Dr. José",
+            SpecialtyId = 3,
+            AffiliatedEntityId = 3
+        });
+
+        ServiceCollection serviceCollection = new();
+        await serviceCollection.AddAsync(new Service()
+        {
+            Name = "Consulta cardiologia",
+            Cost = 100,
+            MedicalSpecialtyId = 1,
+            MedicId = 1,
+            ClientId = 1
+        });
+        await serviceCollection.AddAsync(new Service()
+        {
+            Name = "Consulta dermatologia",
+            Cost = 100,
+            MedicalSpecialtyId = 2,
+            MedicId = 2,
+            ClientId = 2
+        });
+
     }
 }

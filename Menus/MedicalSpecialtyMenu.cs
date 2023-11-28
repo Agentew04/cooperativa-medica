@@ -65,7 +65,7 @@ public class MedicalSpecialtyMenu : AbstractMenu
     {
         Console.WriteLine("==== Remover Especialidade Médica ====");
         Console.WriteLine("Digite o id da especialidade médica: ");
-        int idEspecialidade = Utils.ReadInt("> ", false);
+        int idEspecialidade = Utils.ReadInt("> ", false) ?? default;
         int removed = await medicalSpecialtyCollection.RemoveAsync(x => x.Id == idEspecialidade);
         if (removed > 0)
         {
