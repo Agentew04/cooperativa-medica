@@ -22,8 +22,8 @@ public class MedicMenu : AbstractMenu
 
         Console.WriteLine("Digite o nome do médico: ");
         string nome = Utils.ReadString("Nome: ");
-        int idEspecialidade = Utils.ReadInt("Id da especialidade: ");
-        int idEntidade = Utils.ReadInt("Id da entidade: ");
+        int idEspecialidade = Utils.ReadInt("Id da especialidade: ") ?? default;
+        int idEntidade = Utils.ReadInt("Id da entidade: ") ?? default;
         Medic medic = new()
         {
             Nome = nome,
@@ -38,21 +38,18 @@ public class MedicMenu : AbstractMenu
     {
         Console.WriteLine("==== Editar Médico ====");
         Console.WriteLine("Digite o id do médico: ");
-        int idMedico = Utils.ReadInt("> ", false);
+        int idMedico = Utils.ReadInt("> ", false) ?? default;
         if (!await medicCollection.Contains(x => x.Id == idMedico))
         {
             Utils.Print("Não existe médico com este id!", ConsoleColor.Red);
             return;
         }
-
-        Console.WriteLine("Digite o novo nome do médico: ");
-        string nome = Utils.ReadString("Nome: ");
-        int idEspecialidade = Utils.ReadInt("Id da especialidade: ");
-        int idEntidade = Utils.ReadInt("Id da entidade: ");
         Medic med = (await medicCollection.SelectOneAsync(x => x.Id == idMedico))!;
-        med.Nome = nome;
-        med.AffiliatedEntityId = idEntidade;
-        med.SpecialtyId = idEspecialidade;
+
+        med.Nome = Utils.ReadString("Nome: ", defaultValue: med.Nome);
+        med.SpecialtyId = Utils.ReadInt("Id da especialidade: ", defaultValue: med.SpecialtyId) ?? default;
+        med.AffiliatedEntityId = Utils.ReadInt("Id da entidade: ", defaultValue: med.AffiliatedEntityId) ?? default;
+        
         await medicCollection.UpdateAsync(med);
         Utils.Print("Médico editado com sucesso!", ConsoleColor.Green);
     }
@@ -88,7 +85,7 @@ public class MedicMenu : AbstractMenu
     {
         Console.WriteLine("==== Remover Médico ====");
         Console.WriteLine("Digite o id do médico: ");
-        int idEspecialidade = Utils.ReadInt("> ", false);
+        int idEspecialidade = Utils.ReadInt("> ", false) ?? default;
         int removed = await medicCollection.RemoveAsync(x => x.Id == idEspecialidade);
         if (removed > 0)
         {
