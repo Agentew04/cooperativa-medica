@@ -101,7 +101,7 @@ public class DatabaseService
         `data_nasc` DATE NOT NULL,
         `plan_id` INT NULL,
         PRIMARY KEY (`client_id`),
-        FOREIGN KEY (`plan_id`) REFERENCES `cooperativa`.`plans` (`plan_id`));
+        FOREIGN KEY (`plan_id`) REFERENCES `cooperativa`.`plans` (`plan_id`) ON DELETE NO ACTION);
         """;
         cmd = new(clientsTable, Connection);
         await cmd.ExecuteNonQueryAsync();
@@ -112,7 +112,7 @@ public class DatabaseService
         `nome` VARCHAR(45) NULL,
         `client_id` INT NULL,
         PRIMARY KEY (`dependant_id`),
-        FOREIGN KEY (`client_id`) REFERENCES `cooperativa`.`clients` (`client_id`));
+        FOREIGN KEY (`client_id`) REFERENCES `cooperativa`.`clients` (`client_id`) ON DELETE CASCADE);
         """;
         cmd = new(dependantsTable, Connection);
         await cmd.ExecuteNonQueryAsync();
@@ -124,8 +124,8 @@ public class DatabaseService
         `speciality_id` INT NOT NULL,
         `affiliated_entity_id` INT NOT NULL,
         PRIMARY KEY (`medic_id`),
-        FOREIGN KEY (`speciality_id`) REFERENCES `cooperativa`.`specialities` (`speciality_id`),
-        FOREIGN KEY (`affiliated_entity_id`) REFERENCES `cooperativa`.`affiliated_entities` (`affiliated_entity_id`));
+        FOREIGN KEY (`speciality_id`) REFERENCES `cooperativa`.`specialities` (`speciality_id`) ON DELETE CASCADE,
+        FOREIGN KEY (`affiliated_entity_id`) REFERENCES `cooperativa`.`affiliated_entities` (`affiliated_entity_id`) ON DELETE CASCADE);
         """;
         cmd = new(medicsTable, Connection);
         await cmd.ExecuteNonQueryAsync();
@@ -139,9 +139,9 @@ public class DatabaseService
         `client_id` INT NOT NULL,
         `medic_id` INT NOT NULL,
         PRIMARY KEY (`service_id`),
-        FOREIGN KEY (`speciality_id`) REFERENCES `cooperativa`.`specialities` (`speciality_id`),
-        FOREIGN KEY (`client_id`) REFERENCES `cooperativa`.`clients` (`client_id`),
-        FOREIGN KEY (`medic_id`) REFERENCES `cooperativa`.`medics` (`medic_id`));
+        FOREIGN KEY (`speciality_id`) REFERENCES `cooperativa`.`specialities` (`speciality_id`) ON DELETE CASCADE,
+        FOREIGN KEY (`client_id`) REFERENCES `cooperativa`.`clients` (`client_id`) ON DELETE CASCADE,
+        FOREIGN KEY (`medic_id`) REFERENCES `cooperativa`.`medics` (`medic_id`) ON DELETE CASCADE);
         """;
         cmd = new(servicesTable, Connection);
         await cmd.ExecuteNonQueryAsync();
@@ -155,8 +155,8 @@ public class DatabaseService
         `bank_id` INT NOT NULL,
         `valor` FLOAT NOT NULL,
         PRIMARY KEY (`client_payment_id`),
-        FOREIGN KEY (`client_id`) REFERENCES `cooperativa`.`clients` (`client_id`),
-        FOREIGN KEY (`bank_id`) REFERENCES `cooperativa`.`banks` (`bank_id`));
+        FOREIGN KEY (`client_id`) REFERENCES `cooperativa`.`clients` (`client_id`) ON DELETE CASCADE,
+        FOREIGN KEY (`bank_id`) REFERENCES `cooperativa`.`banks` (`bank_id`) ON DELETE CASCADE);
         """;
         cmd = new(clientPaymentsTable, Connection);
         await cmd.ExecuteNonQueryAsync();
@@ -168,8 +168,8 @@ public class DatabaseService
         `bank_id` INT NOT NULL,
         `valor` FLOAT NOT NULL,
         PRIMARY KEY (`entity_payment_id`),
-        FOREIGN KEY (`affiliated_entity_id`) REFERENCES `cooperativa`.`affiliated_entities` (`affiliated_entity_id`),
-        FOREIGN KEY (`bank_id`) REFERENCES `cooperativa`.`banks` (`bank_id`));
+        FOREIGN KEY (`affiliated_entity_id`) REFERENCES `cooperativa`.`affiliated_entities` (`affiliated_entity_id`) ON DELETE CASCADE,
+        FOREIGN KEY (`bank_id`) REFERENCES `cooperativa`.`banks` (`bank_id`) ON DELETE CASCADE);
         """;
         cmd = new(entityPaymentsTable, Connection);
         await cmd.ExecuteNonQueryAsync();
@@ -196,6 +196,17 @@ public class DatabaseService
             clients c ON s.client_id = c.client_id;
         """;
         cmd = new(servicesView, Connection);
+        await cmd.ExecuteNonQueryAsync();
+
+        string plansTrigger = """
+        CREATE DEFINER = CURRENT_USER TRIGGER `cooperativa`.`plans_BEFORE_DELETE` BEFORE DELETE ON `plans` FOR EACH ROW
+        BEGIN
+            UPDATE `cooperativa`.`clients`
+            SET `plan_id` = NULL
+            WHERE `plan_id` = OLD.plan_id;
+        END
+        """;
+        cmd = new(plansTrigger, Connection);
         await cmd.ExecuteNonQueryAsync();
 
         await AddValues();
