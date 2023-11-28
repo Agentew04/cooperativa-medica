@@ -174,6 +174,30 @@ public class DatabaseService
         cmd = new(entityPaymentsTable, Connection);
         await cmd.ExecuteNonQueryAsync();
 
+        string servicesView = """
+        CREATE OR REPLACE VIEW ServiceView AS
+        SELECT
+            s.service_id AS ServiceId,
+            s.nome AS ServiceName,
+            s.preco AS ServiceCost,
+            ss.speciality_id AS SpecialtyId,
+            ss.nome AS SpecialtyName,
+            m.medic_id AS MedicId,
+            m.nome AS MedicName,
+            c.client_id AS ClientId,
+            c.nome AS ClientName
+        FROM
+            services s
+        JOIN
+            specialities ss ON s.speciality_id = ss.speciality_id
+        JOIN
+            medics m ON s.medic_id = m.medic_id
+        JOIN
+            clients c ON s.client_id = c.client_id;
+        """;
+        cmd = new(servicesView, Connection);
+        await cmd.ExecuteNonQueryAsync();
+
         await AddValues();
     }
 

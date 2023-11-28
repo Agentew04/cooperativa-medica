@@ -7,6 +7,7 @@ using System.Linq;
 using System.Security.Authentication.ExtendedProtection;
 using System.Text;
 using System.Threading.Tasks;
+using CoopMedica.Views;
 
 namespace CoopMedica.Menus;
 public class ServiceMenu : AbstractMenu
@@ -14,6 +15,7 @@ public class ServiceMenu : AbstractMenu
     protected override string Title => "Menu Serviços";
 
     private ServiceCollection serviceCollection = new();
+    private ServiceViewCollection serviceViewCollection = new();
 
     protected override async Task Add()
     {
@@ -62,27 +64,17 @@ public class ServiceMenu : AbstractMenu
     protected override async Task List()
     {
         Console.WriteLine("==== Listar Serviços ====");
-        IEnumerable<Service> services = await serviceCollection.SelectAsync();
-        Table<(Service service, MedicalSpecialty specialty, Medic med, Client cli)> serviceTable = new();
-        var servicesData = services.Join(
-            await new MedicalSpecialtyCollection().SelectAsync(),
-            x => x.MedicalSpecialtyId, x => x.Id, (service, specialty) => (service, specialty)
-        ).Join(
-            await new MedicCollection().SelectAsync(),
-            x => x.service.MedicId, x => x.Id, (service, med) => (service.service, service.specialty, med)
-        ).Join(
-            await new ClientCollection().SelectAsync(),
-            x => x.service.ClientId, x => x.Id, (service, cli) => (service.service, service.specialty, service.med, cli)
-        ).Select(x => (x.service, x.specialty, x.med, x.cli));
-        serviceTable.RegisterColumn(name: "Id", function: x => x.service.Id.ToString())
-            .RegisterColumn(name: "Nome", function: x => x.service.Name)
-            .RegisterColumn(name: "Preço", function: x => x.service.Cost.ToString("C"))
-            .RegisterColumn(name: "Id Especialidade", function: x => x.specialty.Id.ToString())
-            .RegisterColumn(name: "Nome Especialidade", function: x => x.specialty.Nome)
-            .RegisterColumn(name: "Id Médico", function: x => x.med.Id.ToString())
-            .RegisterColumn(name: "Nome Médico", function: x => x.med.Nome)
-            .RegisterColumn(name: "Id Cliente", function: x => x.cli.Id.ToString())
-            .RegisterColumn(name: "Nome Cliente", function: x => x.cli.Nome);
+        Table<ServiceView> serviceTable = new();
+        IEnumerable<ServiceView> servicesData = await serviceViewCollection.SelectAsync();
+
+        serviceTable.RegisterColumn("Id", x => x.ServiceId.ToString());
+        serviceTable.RegisterColumn("Nome", x => x.ServiceName);
+        serviceTable.RegisterColumn("Preço", x => x.ServiceCost.ToString());
+        serviceTable.RegisterColumn("Especialidade", x => x.SpecialtyName);
+        serviceTable.RegisterColumn("Médico", x => x.MedicName);
+        serviceTable.RegisterColumn("Cliente", x => x.ClientName);
+
+
 
         if (servicesData.Count() == 0)
         {
