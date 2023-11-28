@@ -2,6 +2,7 @@ using CoopMedica.Models;
 using CoopMedica.Database;
 using CoopMedica.Services;
 using MySql.Data.MySqlClient;
+using System.Data;
 
 namespace CoopMedica.Menus;
 
@@ -18,8 +19,8 @@ public class ClientMenu : AbstractMenu
         string nome = Utils.ReadString("Nome: ");
         string cpf = Utils.ReadMaskedString("CPF: ", "   .   .   -  ");
         DateOnly dataNasc = Utils.ReadDate("Data de Nascimento: ");
-        int idPlano = Utils.ReadInt("Id do Plano: ", false) ?? default;
-        if (!await planCollection.Contains(x => x.Id == idPlano)) {
+        int? idPlano = Utils.ReadInt("Id do Plano: ", allowEmpty: true);
+        if (idPlano is not null && !await planCollection.Contains(x => x.Id == idPlano)) {
             Utils.Print("Não existe plano com este id!", ConsoleColor.Red);
             return;
         }
@@ -46,7 +47,7 @@ public class ClientMenu : AbstractMenu
         client.Cpf = Utils.ReadMaskedString("CPF: ", "   .   .   -  ", client.Cpf);
         client.DataNascimento = Utils.ReadDate("Data de Nascimento: ", defaultValue: client.DataNascimento);
         client.PlanId = Utils.ReadInt("Id do Plano: ", defaultValue: client.PlanId, allowEmpty: true);
-        if (!await planCollection.Contains(x => x.Id == client.PlanId)) {
+        if (client.PlanId is not null && !await planCollection.Contains(x => x.Id == client.PlanId)) {
             Utils.Print("Não existe plano com este id!", ConsoleColor.Red);
             return;
         }

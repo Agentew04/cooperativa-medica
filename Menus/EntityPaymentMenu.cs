@@ -35,7 +35,7 @@ public class EntityPaymentMenu : AbstractMenu {
         };
 
         await entityPaymentCollection.AddAsync(clientPayment);
-        Utils.Print("Pagamento do Cliente adicionado com sucesso!", ConsoleColor.Green);
+        Utils.Print("Pagamento adicionado com sucesso!", ConsoleColor.Green);
     }
 
     protected override async Task Edit() {
@@ -66,7 +66,7 @@ public class EntityPaymentMenu : AbstractMenu {
         payment.Amount = (float)Utils.ReadDouble("Valor: ", defaultValue: payment.Amount);
 
         await entityPaymentCollection.UpdateAsync(payment);
-        Utils.Print("Dependente editado com sucesso!", ConsoleColor.Green);
+        Utils.Print("Pagamento editado com sucesso!", ConsoleColor.Green);
     }
 
     protected override async Task List() {

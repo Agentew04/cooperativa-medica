@@ -43,7 +43,7 @@ public class MedicalSpecialtyMenu : AbstractMenu
         Console.WriteLine("Digite o novo nome da especialidade médica: ");
         med.Nome = Utils.ReadString("Nome: ", defaultValue: med.Nome);
         await medicalSpecialtyCollection.UpdateAsync(med);
-        Utils.Print("Especialidade médica editado com sucesso!", ConsoleColor.Green);
+        Utils.Print("Especialidade médica editada com sucesso!", ConsoleColor.Green);
     }
 
     protected override async Task List()
