@@ -100,6 +100,7 @@ public class DatabaseService
         `cpf` VARCHAR(45) NOT NULL,
         `data_nasc` DATE NOT NULL,
         `plan_id` INT NULL,
+        `total_payment` FLOAT NOT NULL DEFAULT 0,
         PRIMARY KEY (`client_id`),
         FOREIGN KEY (`plan_id`) REFERENCES `cooperativa`.`plans` (`plan_id`) ON DELETE NO ACTION);
         """;
@@ -198,16 +199,64 @@ public class DatabaseService
         cmd = new(servicesView, Connection);
         await cmd.ExecuteNonQueryAsync();
 
-        string plansTrigger = """
-        CREATE DEFINER = CURRENT_USER TRIGGER `cooperativa`.`plans_BEFORE_DELETE` BEFORE DELETE ON `plans` FOR EACH ROW
+        string addPaymentTrigger = @"
+        CREATE TRIGGER update_total_payment_after_insert
+        AFTER INSERT ON client_payments 
+        FOR EACH ROW 
         BEGIN
-            UPDATE `cooperativa`.`clients`
-            SET `plan_id` = NULL
-            WHERE `plan_id` = OLD.plan_id;
+            DECLARE total_payment FLOAT;
+            
+            SELECT COALESCE(SUM(valor), 0) INTO total_payment 
+            FROM client_payments 
+            WHERE client_id = NEW.client_id;
+
+            UPDATE clients 
+            SET total_payment = total_payment 
+            WHERE client_id = NEW.client_id;
         END
-        """;
-        cmd = new(plansTrigger, Connection);
+        ";
+        cmd = new MySqlCommand(addPaymentTrigger, Connection);
         await cmd.ExecuteNonQueryAsync();
+
+        string updatePaymentTrigger = @"
+        CREATE TRIGGER update_total_payment_after_update
+        AFTER UPDATE ON client_payments
+        FOR EACH ROW
+        BEGIN
+            DECLARE total_payment FLOAT;
+
+            SELECT COALESCE(SUM(valor), 0) INTO total_payment
+            FROM client_payments
+            WHERE client_id = NEW.client_id;
+
+            UPDATE clients
+            SET total_payment = total_payment
+            WHERE client_id = NEW.client_id;
+        END
+        ";
+        cmd = new MySqlCommand(updatePaymentTrigger, Connection);
+        await cmd.ExecuteNonQueryAsync();
+
+        string deletePaymentTrigger = @"
+        CREATE TRIGGER update_total_payment_after_delete
+        AFTER DELETE ON client_payments
+        FOR EACH ROW
+        BEGIN
+            DECLARE total_payment FLOAT;
+
+            SELECT COALESCE(SUM(valor), 0) INTO total_payment
+            FROM client_payments
+            WHERE client_id = OLD.client_id;
+
+            UPDATE clients
+            SET total_payment = total_payment
+            WHERE client_id = OLD.client_id;
+        END
+        ";
+        cmd = new MySqlCommand(deletePaymentTrigger, Connection);
+        await cmd.ExecuteNonQueryAsync();
+
+
 
         await AddValues();
     }
