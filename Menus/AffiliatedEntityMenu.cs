@@ -20,7 +20,7 @@ public class AffiliatedEntityMenu : AbstractMenu
 
         Console.WriteLine("Digite o nome da entidade afiliada: ");
         string nome = Utils.ReadString("Nome: ");
-        string cnpj = Utils.ReadString("CNPJ: ");
+        string cnpj = Utils.ReadMaskedString("CNPJ: ", "  .   .   /    -  ");
         AffiliatedEntity affiliatedEntity = new()
         {
             Nome = nome,
@@ -43,7 +43,7 @@ public class AffiliatedEntityMenu : AbstractMenu
 
         AffiliatedEntity aff = (await affiliatedEntityCollection.SelectOneAsync(x => x.Id == idEntidadeAfiliada))!;
         aff.Nome = Utils.ReadString("Nome: ", defaultValue: aff.Nome);
-        aff.Cnpj = Utils.ReadString("CNPJ: ", defaultValue: aff.Cnpj);
+        aff.Cnpj = Utils.ReadMaskedString("CNPJ: ", "  .   .   /    -  ", defaultValue: aff.Cnpj);
         await affiliatedEntityCollection.UpdateAsync(aff);
         Utils.Print("Entidade afiliada editado com sucesso!", ConsoleColor.Green);
     }

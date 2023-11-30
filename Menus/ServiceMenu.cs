@@ -69,15 +69,14 @@ public class ServiceMenu : AbstractMenu
 
         serviceTable.RegisterColumn("Id", x => x.ServiceId.ToString());
         serviceTable.RegisterColumn("Nome", x => x.ServiceName);
-        serviceTable.RegisterColumn("Preço", x => x.ServiceCost.ToString());
+        serviceTable.RegisterColumn("Preço", x => x.ServiceCost.ToString("C2"));
         serviceTable.RegisterColumn("Especialidade", x => x.SpecialtyName);
         serviceTable.RegisterColumn("Médico", x => x.MedicName);
         serviceTable.RegisterColumn("Cliente", x => x.ClientName);
 
 
 
-        if (servicesData.Count() == 0)
-        {
+        if (!servicesData.Any()) {
             Utils.Print("Não existem serviços cadastrados!", ConsoleColor.Red);
             return;
         }

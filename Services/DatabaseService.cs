@@ -281,12 +281,12 @@ public class DatabaseService
         await affiliatedEntityCollection.AddAsync(new AffiliatedEntity()
         {
             Nome = "Hospital São Lucas",
-            Cnpj = "123.456.789/0001-10"
+            Cnpj = "12.456.789/0001-10"
         });
         await affiliatedEntityCollection.AddAsync(new AffiliatedEntity()
         {
             Nome = "Hospital São José",
-            Cnpj = "123.456.789/0001-11"
+            Cnpj = "12.456.789/0001-11"
         });
         await affiliatedEntityCollection.AddAsync(new AffiliatedEntity()
         {

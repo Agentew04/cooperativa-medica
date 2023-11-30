@@ -13,6 +13,10 @@ public static class Utils {
     /// </summary>
     /// <param name="prompt">Mensagem a ser exibida ao usuario</param>
     /// <param name="allowNegative">Se true, permite numeros negativos</param>
+    /// <param name="allowEmpty">Se o usuário pode deixar o campo em branco</param>
+    /// <param name="defaultValue">O valor padrão para esse campo. <see langword="null"/> se
+    /// o campo não possui valor padrão</param>
+    /// <param name="range">O intervalo dos valores permitidos.</param>
     /// <returns>O inteiro lido</returns>
     public static int? ReadInt(string prompt = "", 
         bool allowNegative = false, 
@@ -87,6 +91,7 @@ public static class Utils {
     /// </summary>
     /// <param name="prompt">O prompt a ser mostrado antes</param>
     /// <param name="allowEmpty">Se o usuario pode inserir strings vazias</param>
+    /// <param name="defaultValue">O valor padrão para esse campo</param>
     /// <returns>A string lida</returns>
     public static string ReadString(string prompt = "", bool allowEmpty = false, string defaultValue = "") {
         bool ok = false;
@@ -132,6 +137,7 @@ public static class Utils {
     /// </summary>
     /// <param name="prompt">O prompt a ser mostrado</param>
     /// <param name="validation">Uma funcao de validacao para o input</param>
+    /// <param name="defaultValue">O valor padrão do campo</param>
     /// <returns>A data lida</returns>
     public static DateOnly ReadDate(string prompt = "", Predicate<DateOnly>? validation = null, DateOnly? defaultValue = null) {
         bool ok = false;
@@ -209,6 +215,7 @@ public static class Utils {
     /// </summary>
     /// <param name="prompt">O prompt a ser mostrado antes do input</param>
     /// <param name="pattern">O padrao/mascara a ser utilizado</param>
+    /// <param name="defaultValue">O valor padrão deste campo</param>
     /// <returns>A string lida, com a mascara incluida</returns>
     public static string ReadMaskedString(string prompt, string pattern, string defaultValue = "") {
         bool ok = false;

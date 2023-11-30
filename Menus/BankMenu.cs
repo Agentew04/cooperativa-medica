@@ -25,7 +25,7 @@ public class BankMenu : AbstractMenu {
         };
 
         await bankCollection.AddAsync(bank);
-        Utils.Print("Dependente adicionado com sucesso!", ConsoleColor.Green);
+        Utils.Print("Banco adicionado com sucesso!", ConsoleColor.Green);
     }
 
     protected override async Task Edit() {

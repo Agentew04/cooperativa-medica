@@ -34,17 +34,13 @@ public class PlanMenu : AbstractMenu
             return;
         }
 
-        Console.WriteLine("Digite os novos nome, valor e desconto do plano: ");
-        string nome = Utils.ReadString("> ");
-        double valor = Utils.ReadDouble("> ");
-        double desconto = Utils.ReadDouble("> ");
-        Plan novoPlano = new() {
-            Id = idPlano,
-            Name = nome,
-            Price = (float)valor,
-            Discount = (float)desconto
-        };
-        await planCollection.UpdateAsync(novoPlano);
+        Plan plan = (await planCollection.SelectOneAsync(x => x.Id == idPlano))!;
+
+        plan.Name = Utils.ReadString("Nome: ", defaultValue: plan.Name);
+        plan.Price = (float)Utils.ReadDouble("Valor: ", defaultValue: plan.Price);
+        plan.Discount =(float) Utils.ReadDouble("Desconto: ", defaultValue: plan.Discount);
+        
+        await planCollection.UpdateAsync(plan);
         Console.WriteLine("Plano editado com sucesso!");
     }
 

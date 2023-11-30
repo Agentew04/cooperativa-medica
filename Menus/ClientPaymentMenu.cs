@@ -71,7 +71,7 @@ public class ClientPaymentMenu : AbstractMenu {
         payment.Amount = (float)Utils.ReadDouble("Valor: ", defaultValue: payment.Amount);
 
         await clientPaymentCollection.UpdateAsync(payment);
-        Utils.Print("Dependente editado com sucesso!", ConsoleColor.Green);
+        Utils.Print("Pagamento editado com sucesso!", ConsoleColor.Green);
     }
 
     protected override async Task List() {

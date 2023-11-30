@@ -24,7 +24,7 @@ public class Program
                 "Especialidade Médica",
                 "Médico",
                 "Serviço",
-                "Pagamento Entidade Conveniada",
+                "Pagamento Entidade Afiliada",
                 "Sair"
             });
 
