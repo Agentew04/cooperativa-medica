@@ -3,7 +3,8 @@ namespace CoopMedica.Models;
 /// <summary>
 /// Classe do modelo que representa um cliente da cooperativa.
 /// </summary>
-public class Client {
+public class Client
+{
 
     /// <summary>
     /// O id principal do cliente.
@@ -31,17 +32,21 @@ public class Client {
     /// </summary>
     public int? PlanId { get; set; }
 
+    public float TotalPayment { get; set; }
+
     /// <summary>
     /// Pega do banco de dados uma lista com os dependentes
     /// </summary>
     /// <returns>A lista com os dependentes</returns>
-    public async Task<List<Dependant>> GetDependantsAsync() {
+    public async Task<List<Dependant>> GetDependantsAsync()
+    {
         // TODO implement this
         await Task.Delay(500);
         return new List<Dependant>();
     }
 
-    public override string ToString() {
+    public override string ToString()
+    {
         return $"{Id} {Nome} {Cpf} {DataNascimento} {PlanId}";
     }
 }

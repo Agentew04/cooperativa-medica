@@ -100,6 +100,7 @@ public class DatabaseService
         `cpf` VARCHAR(45) NOT NULL,
         `data_nasc` DATE NOT NULL,
         `plan_id` INT NULL,
+        `total_payment` FLOAT NOT NULL DEFAULT 0,
         PRIMARY KEY (`client_id`),
         FOREIGN KEY (`plan_id`) REFERENCES `cooperativa`.`plans` (`plan_id`) ON DELETE NO ACTION);
         """;

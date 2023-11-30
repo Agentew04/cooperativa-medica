@@ -7,11 +7,13 @@ public class ClientCollection : BaseCollection<Client>
 {
     public override Client ReadResult(MySqlDataReader rs)
     {
-        Client c = new() {
+        Client c = new()
+        {
             Id = rs.GetInt32(0),
             Nome = rs.GetString(1),
             Cpf = rs.GetString(2),
-            DataNascimento = DateOnly.FromDateTime(rs.GetDateTime(3))
+            DataNascimento = DateOnly.FromDateTime(rs.GetDateTime(3)),
+            TotalPayment = rs.GetFloat(5)
         };
         if (rs.IsDBNull(4))
         {
